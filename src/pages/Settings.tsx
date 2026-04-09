@@ -27,6 +27,9 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [resetStep, setResetStep] = useState(0); // 0=idle, 1=first confirm, 2=second confirm
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
