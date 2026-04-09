@@ -10,6 +10,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { parseVdjXml, convertKeyToCamelot } from '@/lib/adapters/virtualdj';
 import { Progress } from '@/components/ui/progress';
+import { fetchExistingTrackKeys, normalizeKey } from '@/lib/dedup';
 
 interface LibrarySidebarProps {
   activeFilter: string;
@@ -57,30 +58,52 @@ export function LibrarySidebar({ activeFilter, onFilterChange }: LibrarySidebarP
         return;
       }
 
+      // Fetch existing track keys for dedup
+      const existingKeys = await fetchExistingTrackKeys();
+
       const BATCH_SIZE = 50;
       let imported = 0;
+      let skipped = 0;
+      let errors = 0;
 
       for (let i = 0; i < vdjTracks.length; i += BATCH_SIZE) {
-        const batch = vdjTracks.slice(i, i + BATCH_SIZE).map(vt => ({
-          title: vt.title,
-          artist: vt.artist,
-          bpm: vt.bpm || null,
-          key: convertKeyToCamelot(vt.key),
-          genre: vt.genre || null,
-          duration: vt.duration || null,
-          source: 'virtualdj',
-          source_track_id: vt.filePath || null,
-          status: 'to_review' as const,
-        }));
+        const batchRaw = vdjTracks.slice(i, i + BATCH_SIZE);
+        const batch = batchRaw
+          .filter(vt => {
+            const key = normalizeKey(vt.title, vt.artist);
+            if (existingKeys.has(key)) {
+              skipped++;
+              return false;
+            }
+            existingKeys.add(key); // prevent intra-batch dupes
+            return true;
+          })
+          .map(vt => ({
+            title: vt.title,
+            artist: vt.artist,
+            bpm: vt.bpm || null,
+            key: convertKeyToCamelot(vt.key),
+            genre: vt.genre || null,
+            duration: vt.duration || null,
+            source: 'virtualdj',
+            source_track_id: vt.filePath || null,
+            status: 'to_review' as const,
+          }));
 
-        const { error } = await supabase.from('tracks').insert(batch);
-        if (error) console.error('Batch insert error:', error);
+        if (batch.length > 0) {
+          const { error } = await supabase.from('tracks').insert(batch);
+          if (error) {
+            console.error('Batch insert error:', error);
+            errors += batch.length;
+          } else {
+            imported += batch.length;
+          }
+        }
 
-        imported += batch.length;
-        setVdjProgress(Math.round((imported / vdjTracks.length) * 100));
+        setVdjProgress(Math.round(((i + batchRaw.length) / vdjTracks.length) * 100));
       }
 
-      toast.success(`${imported} ${t('sources.vdjSuccess')}`);
+      toast.success(`Importati: ${imported} | Già presenti (saltati): ${skipped} | Errori: ${errors}`);
       queryClient.invalidateQueries({ queryKey: ['tracks'] });
     } catch (err: any) {
       if (err.name !== 'AbortError') {
