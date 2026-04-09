@@ -23,9 +23,10 @@ interface TrackTableProps {
   onSort: (field: SortField) => void;
   selectedIds: Set<string>;
   onSelectionChange: (ids: Set<string>) => void;
+  duplicateIds?: Set<string>;
 }
 
-export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort, selectedIds, onSelectionChange }: TrackTableProps) {
+export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort, selectedIds, onSelectionChange, duplicateIds }: TrackTableProps) {
   const updateTrack = useUpdateTrack();
   const deleteTracks = useDeleteTracks();
   const { t } = useI18n();
