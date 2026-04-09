@@ -48,8 +48,9 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
     { field: 'status', label: t('col.status'), width: 'w-24' },
   ];
 
-  const allSelected = tracks.length > 0 && tracks.every(t => selectedIds.has(t.id));
-  const someSelected = tracks.some(t => selectedIds.has(t.id)) && !allSelected;
+  const ids = selectedIds || new Set<string>();
+  const allSelected = tracks.length > 0 && tracks.every(t => ids.has(t.id));
+  const someSelected = tracks.some(t => ids.has(t.id)) && !allSelected;
 
   const toggleAll = () => {
     if (allSelected) {
