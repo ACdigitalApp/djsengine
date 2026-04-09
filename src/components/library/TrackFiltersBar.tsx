@@ -174,6 +174,29 @@ export function TrackFiltersBar({ filters, onChange, onNewTrack, onDeleteSelecte
           Analizza BPM
         </Button>
 
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 text-xs gap-1"
+          onClick={handleFindDuplicates}
+          disabled={findingDupes}
+        >
+          {findingDupes ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Copy className="h-3.5 w-3.5" />}
+          Trova Duplicati
+        </Button>
+
+        {duplicateIds && duplicateIds.size > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 text-xs gap-1 text-destructive border-destructive/30 hover:bg-destructive/10"
+            onClick={handleDeleteDuplicates}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Elimina {duplicateIds.size} duplicati
+          </Button>
+        )}
+
         <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={onNewTrack}>
           <Plus className="h-3.5 w-3.5" />
           {t('action.newTrack')}
