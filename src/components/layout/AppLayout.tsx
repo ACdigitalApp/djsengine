@@ -1,12 +1,13 @@
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, Library, Disc3, FolderOpen, Radio, Settings,
-  ChevronLeft, ChevronRight
+  LayoutDashboard, Library, FolderOpen, Radio, Settings,
+  ChevronLeft, ChevronRight, Users, CreditCard
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
+import vinylLogo from '@/assets/vinyl-logo.avif';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -18,6 +19,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
     { path: '/library', label: t('nav.library'), icon: Library },
     { path: '/crates', label: t('nav.smartCrates'), icon: FolderOpen },
     { path: '/sources', label: t('nav.sources'), icon: Radio },
+    { path: '/users', label: t('nav.userManagement'), icon: Users },
+    { path: '/bank', label: t('nav.bankDetails'), icon: CreditCard },
     { path: '/settings', label: t('nav.settings'), icon: Settings },
   ];
 
@@ -28,7 +31,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         collapsed ? "w-16" : "w-52"
       )}>
         <div className="flex items-center gap-2 px-4 h-14 border-b border-border">
-          <Disc3 className="h-6 w-6 text-primary shrink-0 animate-pulse-glow" />
+          <img src={vinylLogo} alt="Logo" className="h-7 w-7 rounded-full animate-spin-slow shrink-0" />
           {!collapsed && <span className="font-heading font-bold text-foreground text-sm tracking-tight">DJ Selection Engine</span>}
         </div>
 

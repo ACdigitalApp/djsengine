@@ -11,6 +11,9 @@ import TrackDetailPage from "./pages/TrackDetail";
 import CratesPage from "./pages/Crates";
 import SourcesPage from "./pages/Sources";
 import SettingsPage from "./pages/Settings";
+import AuthPage from "./pages/Auth";
+import UserManagementPage from "./pages/UserManagement";
+import BankDetailsPage from "./pages/BankDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,18 +25,19 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Navigate to="/library" replace />} />
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/library" element={<LibraryPage />} />
-              <Route path="/track/:id" element={<TrackDetailPage />} />
-              <Route path="/crates" element={<CratesPage />} />
-              <Route path="/sources" element={<SourcesPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/" element={<Navigate to="/library" replace />} />
+            <Route path="/dashboard" element={<AppLayout><DashboardPage /></AppLayout>} />
+            <Route path="/library" element={<AppLayout><LibraryPage /></AppLayout>} />
+            <Route path="/track/:id" element={<AppLayout><TrackDetailPage /></AppLayout>} />
+            <Route path="/crates" element={<AppLayout><CratesPage /></AppLayout>} />
+            <Route path="/sources" element={<AppLayout><SourcesPage /></AppLayout>} />
+            <Route path="/users" element={<AppLayout><UserManagementPage /></AppLayout>} />
+            <Route path="/bank" element={<AppLayout><BankDetailsPage /></AppLayout>} />
+            <Route path="/settings" element={<AppLayout><SettingsPage /></AppLayout>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </I18nProvider>
