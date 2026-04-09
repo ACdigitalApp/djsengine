@@ -32,25 +32,8 @@ export default function SourcesPage() {
   const [searching, setSearching] = useState(false);
   const [importing, setImporting] = useState<string | null>(null);
 
-  // Listen for OAuth popup postMessage
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-
-      if (event.data?.type === 'tidal_oauth_success') {
-        setTidalConnected(true);
-        toast.success(t('sources.tidalConnected'));
-      } else if (event.data?.type === 'tidal_oauth_error') {
-        toast.error(`${t('sources.tidalError')}: ${event.data.error}`);
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, []);
-
-  const handleConnectTidal = async () => {
-    await startTidalOAuth();
+  const handleConnectTidal = () => {
+    startTidalOAuth();
   };
 
   const handleDisconnectTidal = () => {
