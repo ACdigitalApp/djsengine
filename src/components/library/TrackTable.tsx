@@ -1,10 +1,12 @@
+import { useRef, useState } from 'react';
 import type { Track, SortField, SortDirection } from '@/types/track';
 import { cn } from '@/lib/utils';
 import { StatusBadge, EnergyBar, ScoreBadge } from '@/components/ui/score-badge';
-import { ArrowUpDown, ArrowUp, ArrowDown, Play, Pause, ListPlus, Star } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, Play, Pause, ListPlus, Star, Paperclip, Loader2, CheckCircle2 } from 'lucide-react';
 import { useUpdateTrack } from '@/hooks/useTracks';
 import { useI18n } from '@/lib/i18n';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TrackTableProps {
   tracks: Track[];
@@ -21,6 +23,10 @@ interface TrackTableProps {
 export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort }: TrackTableProps) {
   const updateTrack = useUpdateTrack();
   const { t } = useI18n();
+  const [uploadingTrackId, setUploadingTrackId] = useState<string | null>(null);
+  const [uploadedTrackId, setUploadedTrackId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadTargetRef = useRef<string | null>(null);
 
   const COLUMNS: { field: SortField; label: string; width: string }[] = [
     { field: 'title', label: t('col.titleArtist'), width: 'min-w-[200px] flex-[2]' },
@@ -42,8 +48,51 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
     toast.success(track.favorite ? t('action.removedFavorite') : t('action.savedFavorite'));
   };
 
+  const handleUploadClick = (e: React.MouseEvent, trackId: string) => {
+    e.stopPropagation();
+    uploadTargetRef.current = trackId;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const trackId = uploadTargetRef.current;
+    if (!file || !trackId) return;
+
+    // Reset input so same file can be re-selected
+    e.target.value = '';
+
+    setUploadingTrackId(trackId);
+    const ext = file.name.split('.').pop();
+    const path = `${trackId}.${ext}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('track-audio')
+        .upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from('track-audio').getPublicUrl(path);
+      updateTrack.mutate({ id: trackId, updates: { audio_url: publicUrl } });
+      toast.success(t('player.audioUploaded'));
+      setUploadedTrackId(trackId);
+      setTimeout(() => setUploadedTrackId(null), 2000);
+    } catch (err: any) {
+      toast.error((t('player.uploadError') || 'Upload error') + ': ' + err.message);
+    } finally {
+      setUploadingTrackId(null);
+    }
+  };
+
   return (
     <div className="flex-1 overflow-auto">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".mp3,.wav,.flac,audio/mpeg,audio/wav,audio/flac"
+        className="hidden"
+        onChange={handleFileChange}
+      />
       <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3">
         <div className="w-[72px] shrink-0" />
         {COLUMNS.map(col => (
@@ -64,7 +113,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
             )}
           </button>
         ))}
-        <div className="w-[68px] shrink-0" />
+        <div className="w-[92px] shrink-0" />
       </div>
 
       <div className="divide-y divide-border/50">
@@ -127,7 +176,26 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
               </div>
               <div className="w-24 shrink-0"><StatusBadge status={track.status} /></div>
 
-              <div className="w-[68px] shrink-0 flex items-center gap-1 justify-end">
+              <div className="w-[92px] shrink-0 flex items-center gap-0.5 justify-end">
+                <button
+                  onClick={(e) => handleUploadClick(e, track.id)}
+                  disabled={uploadingTrackId === track.id}
+                  className={cn(
+                    "p-1.5 rounded hover:bg-secondary transition-colors",
+                    uploadingTrackId === track.id ? "text-primary animate-pulse" :
+                    uploadedTrackId === track.id ? "text-green-500" :
+                    track.audio_url ? "text-primary/60" : "text-muted-foreground hover:text-foreground"
+                  )}
+                  title={uploadingTrackId === track.id ? 'Uploading...' : 'Upload audio'}
+                >
+                  {uploadingTrackId === track.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : uploadedTrackId === track.id ? (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <Paperclip className="h-3.5 w-3.5" />
+                  )}
+                </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onAddToPlaylist(track); }}
                   className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
