@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Download, Music, Lightbulb, RefreshCw, Disc3, CheckCircle2 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import vinylLogo from '@/assets/vinyl-logo.avif';
+import djEngineLogo from '@/assets/dj-engine-logo.png';
 
 export default function IndexPage() {
   const { t } = useI18n();
@@ -11,7 +11,7 @@ export default function IndexPage() {
       {/* Header */}
       <header className="flex items-center justify-between px-6 md:px-12 py-4 border-b border-border bg-card">
         <div className="flex items-center gap-3">
-          <img src={vinylLogo} alt="DJSENGINE" className="h-9 w-9 rounded-full animate-spin-slow" />
+          <img src={djEngineLogo} alt="DJSENGINE" className="h-9 object-contain" />
           <span className="font-heading font-bold text-foreground text-lg tracking-tight">DJSENGINE</span>
         </div>
         <nav className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
@@ -101,7 +101,7 @@ export default function IndexPage() {
             </Link>
           </div>
           <div className="flex-shrink-0">
-            <img src={vinylLogo} alt="DJSENGINE" className="h-48 w-48 rounded-full animate-spin-slow shadow-lg" />
+            <img src={djEngineLogo} alt="DJSENGINE" className="h-48 object-contain" />
           </div>
         </div>
       </section>
