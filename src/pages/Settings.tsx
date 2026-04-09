@@ -3,7 +3,7 @@ import { useI18n } from '@/lib/i18n';
 import { useSettings, useUpsertSetting } from '@/hooks/useSettings';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
-import { Save, Globe, User, Lock, LogOut, Key } from 'lucide-react';
+import { Save, Globe, User, LogOut, Key } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import type { RecommendationWeights } from '@/types/track';
