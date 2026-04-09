@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 import { useI18n } from '@/lib/i18n';
 
 export default function TrackDetailPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { id } = useParams<{ id: string }>();
   const { data: track, isLoading } = useTrack(id);
   const { data: allTracks = [] } = useTracks();
@@ -22,10 +22,10 @@ export default function TrackDetailPage() {
     if (!track) return [];
     return allTracks
       .filter(t => t.id !== track.id)
-      .map(t => ({ track: t, ...calculateCompatibility(track, t) }))
+      .map(t => ({ track: t, ...calculateCompatibility(track, t, undefined, lang) }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 6);
-  }, [track, allTracks]);
+  }, [track, allTracks, lang]);
 
   const handleAction = (action: string) => {
     if (!track) return;

@@ -16,7 +16,7 @@ interface RecommendationPanelProps {
 export function RecommendationPanel({ selectedTrack, allTracks }: RecommendationPanelProps) {
   const updateTrack = useUpdateTrack();
   const feedback = useFeedback();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const recommendations = useMemo(() => {
     if (!selectedTrack) return [];
@@ -24,11 +24,11 @@ export function RecommendationPanel({ selectedTrack, allTracks }: Recommendation
       .filter(t => t.id !== selectedTrack.id)
       .map(t => ({
         track: t,
-        ...calculateCompatibility(selectedTrack, t),
+        ...calculateCompatibility(selectedTrack, t, undefined, lang),
       }))
       .sort((a, b) => b.score - a.score)
       .slice(0, 8);
-  }, [selectedTrack, allTracks]);
+  }, [selectedTrack, allTracks, lang]);
 
   const useCase = selectedTrack ? getTrackUseCase(selectedTrack) : null;
 
