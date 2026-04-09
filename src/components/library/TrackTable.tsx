@@ -23,9 +23,10 @@ interface TrackTableProps {
   onSort: (field: SortField) => void;
   selectedIds: Set<string>;
   onSelectionChange: (ids: Set<string>) => void;
+  duplicateIds?: Set<string>;
 }
 
-export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort, selectedIds, onSelectionChange }: TrackTableProps) {
+export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort, selectedIds, onSelectionChange, duplicateIds }: TrackTableProps) {
   const updateTrack = useUpdateTrack();
   const deleteTracks = useDeleteTracks();
   const { t } = useI18n();
@@ -199,6 +200,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
           const isSelected = track.id === selectedTrackId;
           const isPlaying = track.id === playingTrackId;
           const isChecked = selectedIds.has(track.id);
+          const isDuplicate = duplicateIds?.has(track.id) || false;
           const isHighCandidate = (track.crowd_score || 0) >= 8 && (track.affinity_score || 0) >= 7;
           return (
             <div
@@ -208,7 +210,8 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
                 "w-full flex items-center gap-0 px-3 py-1.5 text-left transition-colors cursor-pointer",
                 isSelected ? "bg-primary/10 border-l-2 border-l-primary" : "hover:bg-secondary/50",
                 isChecked && !isSelected && "bg-primary/5",
-                isHighCandidate && !isSelected && !isChecked && "bg-primary/[0.03]"
+                isDuplicate && "bg-destructive/10 border-l-2 border-l-destructive",
+                isHighCandidate && !isSelected && !isChecked && !isDuplicate && "bg-primary/[0.03]"
               )}
             >
               <div className="w-8 shrink-0 flex items-center justify-center" onClick={e => e.stopPropagation()}>

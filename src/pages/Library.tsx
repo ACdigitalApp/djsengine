@@ -9,6 +9,7 @@ import { useI18n } from '@/lib/i18n';
 import type { Track, TrackFilters, SortField, SortDirection } from '@/types/track';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchExistingTrackKeys, normalizeKey } from '@/lib/dedup';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,7 @@ export default function LibraryPage() {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   const [playingTrack, setPlayingTrack] = useState<Track | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [duplicateIds, setDuplicateIds] = useState<Set<string>>(new Set());
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showNewDialog, setShowNewDialog] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -129,6 +131,12 @@ export default function LibraryPage() {
 
   const confirmNewTrack = async () => {
     if (!newTitle.trim() || !newArtist.trim()) return;
+    // Dedup check
+    const existing = await fetchExistingTrackKeys();
+    if (existing.has(normalizeKey(newTitle, newArtist))) {
+      toast.warning('Brano già presente in libreria (stesso titolo + artista)');
+      return;
+    }
     const { error } = await supabase.from('tracks').insert({ title: newTitle.trim(), artist: newArtist.trim(), source: 'local', status: 'to_review' });
     if (error) {
       toast.error(error.message);
@@ -180,7 +188,7 @@ export default function LibraryPage() {
       <div className="flex flex-1 min-h-0">
         <LibrarySidebar activeFilter={sidebarFilter} onFilterChange={setSidebarFilter} />
         <div className="flex-1 flex flex-col min-w-0">
-          <TrackFiltersBar filters={filters} onChange={setFilters} onNewTrack={handleNewTrack} onDeleteSelected={handleDeleteSelected} selectedCount={selectedIds.size} />
+          <TrackFiltersBar filters={filters} onChange={setFilters} onNewTrack={handleNewTrack} onDeleteSelected={handleDeleteSelected} selectedCount={selectedIds.size} duplicateIds={duplicateIds} onDuplicatesFound={setDuplicateIds} />
           {isLoading ? (
             <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">{t('general.loading')}</div>
           ) : (
@@ -196,6 +204,7 @@ export default function LibraryPage() {
               onSort={handleSort}
               selectedIds={selectedIds}
               onSelectionChange={setSelectedIds}
+              duplicateIds={duplicateIds}
             />
           )}
         </div>
