@@ -132,6 +132,17 @@ const translations = {
   'action.savedFavorite': { en: 'Saved to favorites', it: 'Salvato nei preferiti' },
   'action.removedFavorite': { en: 'Removed from favorites', it: 'Rimosso dai preferiti' },
   'action.playlistComingSoon': { en: 'Playlist: coming soon', it: 'Playlist: in arrivo' },
+  'action.newTrack': { en: 'New', it: 'Nuovo' },
+  'action.deleteSelected': { en: 'Delete', it: 'Elimina' },
+  'action.deleteConfirmTitle': { en: 'Delete tracks?', it: 'Eliminare i brani?' },
+  'action.deleteConfirmDesc': { en: 'This action cannot be undone. The selected tracks will be permanently removed.', it: 'Questa azione non può essere annullata. I brani selezionati verranno rimossi definitivamente.' },
+  'action.cancel': { en: 'Cancel', it: 'Annulla' },
+  'action.confirm': { en: 'Confirm', it: 'Conferma' },
+  'action.deleted': { en: 'Track deleted', it: 'Brano eliminato' },
+  'action.deletedMultiple': { en: 'tracks deleted', it: 'brani eliminati' },
+  'action.download': { en: 'Download audio', it: 'Scarica audio' },
+  'action.noAudioDownload': { en: 'No audio to download', it: 'Nessun audio da scaricare' },
+  'action.deleteTrack': { en: 'Delete track', it: 'Elimina brano' },
 
   // Audio player
   'player.uploadAudio': { en: 'Upload audio', it: 'Carica audio' },

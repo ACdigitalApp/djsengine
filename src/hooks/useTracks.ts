@@ -60,6 +60,21 @@ export function useUpdateTrack() {
   });
 }
 
+export function useDeleteTracks() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase.from('tracks').delete().in('id', ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['tracks'] });
+      qc.invalidateQueries({ queryKey: ['track'] });
+      qc.invalidateQueries({ queryKey: ['trackStats'] });
+    },
+  });
+}
+
 export function useTrackStats() {
   return useQuery({
     queryKey: ['trackStats'],

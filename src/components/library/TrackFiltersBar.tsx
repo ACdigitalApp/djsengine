@@ -1,18 +1,22 @@
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import type { TrackFilters } from '@/types/track';
-import { Search, X } from 'lucide-react';
+import { Search, X, Plus, Trash2 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 
 interface TrackFiltersBarProps {
   filters: TrackFilters;
   onChange: (filters: TrackFilters) => void;
+  onNewTrack: () => void;
+  onDeleteSelected: () => void;
+  selectedCount: number;
 }
 
 const KEYS = ['1A','1B','2A','2B','3A','3B','4A','4B','5A','5B','6A','6B','7A','7B','8A','8B','9A','9B','10A','10B','11A','11B','12A','12B'];
 const GENRES = ['House','Tech House','Techno','Progressive House','Vocal House','French House','UK Garage','Disco','Nu Disco','Electronica','Electro House','Breaks','Trance','Deep House','Melodic Techno','Downtempo','Dance Pop','EDM'];
 
-export function TrackFiltersBar({ filters, onChange }: TrackFiltersBarProps) {
+export function TrackFiltersBar({ filters, onChange, onNewTrack, onDeleteSelected, selectedCount }: TrackFiltersBarProps) {
   const { t } = useI18n();
   const update = (partial: Partial<TrackFilters>) => onChange({ ...filters, ...partial });
   const hasFilters = filters.search || filters.bpmMin || filters.bpmMax || filters.key || filters.genre || filters.energy;
@@ -64,6 +68,22 @@ export function TrackFiltersBar({ filters, onChange }: TrackFiltersBarProps) {
           {GENRES.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}
         </SelectContent>
       </Select>
+
+      <Button variant="outline" size="sm" className="h-8 text-xs gap-1" onClick={onNewTrack}>
+        <Plus className="h-3.5 w-3.5" />
+        {t('action.newTrack')}
+      </Button>
+
+      <Button
+        variant="outline"
+        size="sm"
+        className="h-8 text-xs gap-1 text-destructive border-destructive/30 hover:bg-destructive/10"
+        onClick={onDeleteSelected}
+        disabled={selectedCount === 0}
+      >
+        <Trash2 className="h-3.5 w-3.5" />
+        {t('action.deleteSelected')}{selectedCount > 0 ? ` (${selectedCount})` : ''}
+      </Button>
 
       {hasFilters && (
         <button
