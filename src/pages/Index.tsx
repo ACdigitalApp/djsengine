@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Download, Music, Lightbulb, RefreshCw, Disc3, CheckCircle2 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import vinylLogo from '@/assets/vinyl-logo.avif';
-import djEngineLogo from '@/assets/dj-engine-logo.png';
+import djEngineLogo from '@/assets/dj-engine-logo-clean.png';
 
 export default function IndexPage() {
   const { t } = useI18n();
@@ -101,7 +101,7 @@ export default function IndexPage() {
               <Download className="h-4 w-4" /> {t('home.startFree')}
             </Link>
           </div>
-          <div className="flex-shrink-0 w-80">
+          <div className="flex-shrink-0 w-full max-w-[420px]">
             <img src={djEngineLogo} alt="DJ'S ENGINE" className="w-full h-auto object-contain" />
           </div>
         </div>
