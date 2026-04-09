@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
 export type Language = 'en' | 'it';
 
@@ -12,6 +12,31 @@ const translations = {
   'nav.userManagement': { en: 'User Management', it: 'Gestione Utenti' },
   'nav.bankDetails': { en: 'Bank Details', it: 'Dati Bancari' },
 
+  // Home / Landing
+  'home.features': { en: 'Features', it: 'Funzioni' },
+  'home.benefits': { en: 'Benefits', it: 'Vantaggi' },
+  'home.signIn': { en: 'Sign In', it: 'Accedi' },
+  'home.startFree': { en: 'Start Free', it: 'Inizia Gratis' },
+  'home.heroTitle1': { en: 'Organize your music', it: 'Organizza la tua musica' },
+  'home.heroTitleHighlight': { en: 'like a pro DJ', it: 'come un DJ professionista' },
+  'home.heroTitle2': { en: '', it: '' },
+  'home.heroSubtitle': { en: 'Manage playlists, select the best tracks, find the most compatible mixes and keep your library always up to date.', it: 'Gestisci playlist, seleziona i brani migliori, trova i mix più compatibili e mantieni la tua libreria sempre aggiornata.' },
+  'home.card1Title': { en: 'Music Selection', it: 'Selezione Musicale' },
+  'home.card1Desc': { en: 'Organize tracks, playlists and library with smart filters for BPM, key, energy and compatibility.', it: 'Organizza tracce, playlist e libreria con filtri intelligenti per BPM, key, energia e compatibilità.' },
+  'home.card2Title': { en: 'Smart Recommendations', it: 'Raccomandazioni Intelligenti' },
+  'home.card2Desc': { en: 'Get suggestions for the next best track based on mix, style, energy and sound affinity.', it: 'Ricevi suggerimenti sul prossimo brano più adatto in base a mix, stile, energia e affinità sonora.' },
+  'home.card3Title': { en: 'Always Updated Library', it: 'Libreria Sempre Aggiornata' },
+  'home.card3Desc': { en: 'Keep control of your selections, discover useful new tracks and prepare more effective sets.', it: 'Mantieni il controllo delle tue selezioni, scopri novità utili e prepara set più efficaci.' },
+  'home.infoTag': { en: 'PORTABLE APP', it: 'APP PORTATILE' },
+  'home.infoTitle': { en: 'Take your music selection everywhere', it: 'Porta la tua selezione musicale sempre con te' },
+  'home.infoBullet1': { en: 'Quick access to your library', it: 'Accesso rapido alla libreria' },
+  'home.infoBullet2': { en: 'Playlists and crates always available', it: 'Playlist e crate sempre disponibili' },
+  'home.infoBullet3': { en: 'Useful tools to choose the next track', it: 'Strumenti utili per scegliere il prossimo brano' },
+  'home.infoBullet4': { en: 'Clean and optimized experience', it: 'Esperienza pulita e ottimizzata' },
+  'home.ctaTitle': { en: 'Ready to improve your music selection?', it: 'Pronto a migliorare la tua selezione musicale?' },
+  'home.ctaSubtitle': { en: 'Access your library, organize tracks and build smarter sets.', it: 'Accedi alla tua libreria, organizza i brani e costruisci set più intelligenti.' },
+  'home.registerFree': { en: 'Register Free', it: 'Registrati Gratis' },
+
   // Auth
   'auth.welcomeBack': { en: 'Welcome Back!', it: 'Bentornato!' },
   'auth.createAccount': { en: 'Create Account', it: 'Crea Account' },
@@ -24,6 +49,15 @@ const translations = {
   'auth.hasAccount': { en: 'Already have an account?', it: 'Hai già un account?' },
   'auth.loginSuccess': { en: 'Logged in!', it: 'Accesso effettuato!' },
   'auth.signupSuccess': { en: 'Check your email to confirm', it: 'Controlla la tua email per confermare' },
+  'auth.name': { en: 'Name', it: 'Nome' },
+  'auth.namePlaceholder': { en: 'Your name', it: 'Il tuo nome' },
+  'auth.confirmPassword': { en: 'Confirm Password', it: 'Conferma Password' },
+  'auth.passwordMismatch': { en: 'Passwords do not match', it: 'Le password non corrispondono' },
+
+  // Errors
+  'error.forbidden': { en: 'Access Denied', it: 'Accesso Negato' },
+  'error.forbiddenDesc': { en: 'You do not have permission to access this page. Contact an administrator.', it: 'Non hai i permessi per accedere a questa pagina. Contatta un amministratore.' },
+  'error.goBack': { en: 'Go to Library', it: 'Vai alla Libreria' },
 
   // Library sidebar
   'sidebar.library': { en: 'Library', it: 'Libreria' },
@@ -148,6 +182,9 @@ const translations = {
   'settings.passwordChanged': { en: 'Password updated', it: 'Password aggiornata' },
   'settings.logout': { en: 'Sign Out', it: 'Esci' },
   'settings.logoutDesc': { en: 'Disconnect your account', it: 'Disconnetti il tuo account' },
+  'settings.subscription': { en: 'Subscription', it: 'Abbonamento' },
+  'settings.subscriptionDesc': { en: 'Manage your plan and billing', it: 'Gestisci il tuo piano e la fatturazione' },
+  'settings.fullAccess': { en: 'Full access', it: 'Accesso completo' },
 
   // Crates
   'crates.title': { en: 'Smart Crates', it: 'Crate Intelligenti' },
@@ -234,7 +271,7 @@ const translations = {
   'bank.noLogs': { en: 'No log entries', it: 'Nessun registro' },
 
   // General
-  'general.loading': { en: 'Loading tracks...', it: 'Caricamento brani...' },
+  'general.loading': { en: 'Loading...', it: 'Caricamento...' },
   'general.noTracks': { en: 'No tracks found', it: 'Nessun brano trovato' },
   'general.trackNotFound': { en: 'Track not found', it: 'Brano non trovato' },
 } as const;
