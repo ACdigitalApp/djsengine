@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import vinylLogo from '@/assets/vinyl-logo.avif';
 
@@ -12,6 +12,8 @@ export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +27,16 @@ export default function AuthPage() {
         toast.success(t('auth.loginSuccess'));
         navigate('/library');
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        if (password !== confirmPassword) {
+          toast.error(t('auth.passwordMismatch'));
+          setLoading(false);
+          return;
+        }
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { display_name: displayName } },
+        });
         if (error) throw error;
         toast.success(t('auth.signupSuccess'));
       }
@@ -40,7 +51,7 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md bg-card rounded-2xl shadow-lg border border-border p-8">
         <div className="flex flex-col items-center mb-6">
-          <img src={vinylLogo} alt="Logo" className="h-16 w-16 rounded-full animate-spin-slow mb-4" />
+          <img src={vinylLogo} alt="DJSENGINE" className="h-16 w-16 rounded-full animate-spin-slow mb-4" />
           <h1 className="text-2xl font-heading font-bold text-foreground">
             {isLogin ? t('auth.welcomeBack') : t('auth.createAccount')}
           </h1>
@@ -50,6 +61,23 @@ export default function AuthPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t('auth.name')}</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={e => setDisplayName(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder={t('auth.namePlaceholder')}
+                  required
+                />
+              </div>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">Email</label>
             <div className="relative">
@@ -82,6 +110,23 @@ export default function AuthPage() {
               </button>
             </div>
           </div>
+
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t('auth.confirmPassword')}</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-secondary border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="••••••"
+                  required
+                />
+              </div>
+            </div>
+          )}
 
           {isLogin && (
             <Link to="/forgot-password" className="text-sm text-primary hover:underline">
