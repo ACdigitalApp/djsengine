@@ -1,10 +1,12 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import type { Track } from '@/types/track';
-import { Upload } from 'lucide-react';
+import { Upload, AlertCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useUpdateTrack } from '@/hooks/useTracks';
 import { useI18n } from '@/lib/i18n';
 import { toast } from 'sonner';
+
+type AudioStatus = 'idle' | 'loading' | 'ready' | 'playing' | 'paused' | 'error';
 
 interface AudioPlayerProps {
   track: Track | null;
@@ -14,8 +16,16 @@ interface AudioPlayerProps {
 
 export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const updateTrack = useUpdateTrack();
   const { t } = useI18n();
+  const [audioStatus, setAudioStatus] = useState<AudioStatus>('idle');
+
+  const hasAudio = !!track?.audio_url;
+
+  useEffect(() => {
+    setAudioStatus(hasAudio ? 'idle' : 'idle');
+  }, [track?.id]);
 
   const handleUploadAudio = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !track) return;
@@ -82,12 +92,21 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
         <div className="text-[10px] text-muted-foreground truncate">{track.artist}</div>
       </div>
 
-      {/* Native HTML5 audio player */}
-      {track.audio_url ? (
+      {/* Audio player or upload prompt */}
+      {hasAudio ? (
         <audio
+          ref={audioRef}
           controls
-          src={track.audio_url}
-          onEnded={() => onNext?.()}
+          src={track.audio_url!}
+          onLoadStart={() => setAudioStatus('loading')}
+          onCanPlay={() => setAudioStatus('ready')}
+          onPlay={() => setAudioStatus('playing')}
+          onPause={() => setAudioStatus('paused')}
+          onEnded={() => { setAudioStatus('idle'); onNext?.(); }}
+          onError={() => {
+            setAudioStatus('error');
+            toast.error(t('player.noAudio'));
+          }}
           className="flex-1 h-8"
           style={{ minWidth: 200 }}
         />
@@ -98,8 +117,18 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
             {t("player.uploadAudio")}
             <input ref={fileInputRef} type="file" accept="audio/*" className="hidden" onChange={handleUploadAudio} />
           </label>
-          <span className="text-[10px] text-muted-foreground">{t('player.noAudio')}</span>
+          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+            <AlertCircle className="h-3 w-3" />
+            {t('player.noAudio')}
+          </span>
         </div>
+      )}
+
+      {/* Audio status indicator */}
+      {audioStatus === 'error' && hasAudio && (
+        <span className="text-[10px] text-destructive flex items-center gap-1">
+          <AlertCircle className="h-3 w-3" /> Error
+        </span>
       )}
     </div>
   );

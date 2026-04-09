@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+import { TopBar } from "@/components/layout/TopBar";
 import { I18nProvider } from "@/lib/i18n";
 import IndexPage from "./pages/Index";
 import DashboardPage from "./pages/Dashboard";
@@ -28,26 +29,31 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<IndexPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/forbidden" element={<ForbiddenPage />} />
+          <div className="flex flex-col h-screen">
+            <TopBar />
+            <div className="flex-1 min-h-0">
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<IndexPage />} />
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/forbidden" element={<ForbiddenPage />} />
 
-            {/* Protected routes */}
-            <Route path="/dashboard" element={<AuthGuard><AppLayout><DashboardPage /></AppLayout></AuthGuard>} />
-            <Route path="/library" element={<AuthGuard><AppLayout><LibraryPage /></AppLayout></AuthGuard>} />
-            <Route path="/track/:id" element={<AuthGuard><AppLayout><TrackDetailPage /></AppLayout></AuthGuard>} />
-            <Route path="/crates" element={<AuthGuard><AppLayout><CratesPage /></AppLayout></AuthGuard>} />
-            <Route path="/sources" element={<AuthGuard><AppLayout><SourcesPage /></AppLayout></AuthGuard>} />
-            <Route path="/settings" element={<AuthGuard><AppLayout><SettingsPage /></AppLayout></AuthGuard>} />
+                {/* Protected routes */}
+                <Route path="/dashboard" element={<AuthGuard><AppLayout><DashboardPage /></AppLayout></AuthGuard>} />
+                <Route path="/library" element={<AuthGuard><AppLayout><LibraryPage /></AppLayout></AuthGuard>} />
+                <Route path="/track/:id" element={<AuthGuard><AppLayout><TrackDetailPage /></AppLayout></AuthGuard>} />
+                <Route path="/crates" element={<AuthGuard><AppLayout><CratesPage /></AppLayout></AuthGuard>} />
+                <Route path="/sources" element={<AuthGuard><AppLayout><SourcesPage /></AppLayout></AuthGuard>} />
+                <Route path="/settings" element={<AuthGuard><AppLayout><SettingsPage /></AppLayout></AuthGuard>} />
 
-            {/* Admin-only routes */}
-            <Route path="/users" element={<AuthGuard requireAdmin><AppLayout><UserManagementPage /></AppLayout></AuthGuard>} />
-            <Route path="/bank" element={<AuthGuard requireAdmin><AppLayout><BankDetailsPage /></AppLayout></AuthGuard>} />
+                {/* Admin-only routes */}
+                <Route path="/users" element={<AuthGuard requireAdmin><AppLayout><UserManagementPage /></AppLayout></AuthGuard>} />
+                <Route path="/bank" element={<AuthGuard requireAdmin><AppLayout><BankDetailsPage /></AppLayout></AuthGuard>} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </div>
         </BrowserRouter>
       </TooltipProvider>
     </I18nProvider>

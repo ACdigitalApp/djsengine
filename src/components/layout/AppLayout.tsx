@@ -1,25 +1,17 @@
 import { ReactNode } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Library, FolderOpen, Radio, Settings,
-  ChevronLeft, ChevronRight, Users, CreditCard, LogOut
+  ChevronLeft, ChevronRight, Users, CreditCard
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
-import { supabase } from '@/integrations/supabase/client';
-import vinylLogo from '@/assets/vinyl-logo.avif';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
   const { t } = useI18n();
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/auth');
-  };
 
   const NAV_ITEMS = [
     { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
@@ -32,16 +24,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-full overflow-hidden bg-background">
       <aside className={cn(
         "flex flex-col border-r border-border bg-card transition-all duration-200",
         collapsed ? "w-16" : "w-52"
       )}>
-        <div className="flex items-center gap-2 px-4 h-14 border-b border-border">
-          <img src={vinylLogo} alt="Logo" className="h-7 w-7 rounded-full animate-spin-slow shrink-0" />
-          {!collapsed && <span className="font-heading font-bold text-foreground text-sm tracking-tight">DJ Selection Engine</span>}
-        </div>
-
         <nav className="flex-1 py-2 space-y-0.5 px-2">
           {NAV_ITEMS.map(item => {
             const active = location.pathname.startsWith(item.path);
@@ -65,18 +52,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
         <div className="mt-auto border-t border-border">
           <button
-            onClick={handleLogout}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 mx-2 my-1 rounded-md text-sm transition-colors w-[calc(100%-1rem)]",
-              "text-destructive hover:bg-destructive/10"
-            )}
-          >
-            <LogOut className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>{t('settings.logout')}</span>}
-          </button>
-          <button
             onClick={() => setCollapsed(!collapsed)}
-            className="flex items-center justify-center h-10 border-t border-border text-muted-foreground hover:text-foreground transition-colors w-full"
+            className="flex items-center justify-center h-10 text-muted-foreground hover:text-foreground transition-colors w-full"
           >
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
