@@ -63,7 +63,8 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
     e.target.value = '';
 
     setUploadingTrackId(trackId);
-    const ext = file.name.split('.').pop();
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ext = sanitizedName.split('.').pop();
     const path = `${trackId}.${ext}`;
 
     try {
