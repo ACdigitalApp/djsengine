@@ -96,6 +96,40 @@ export function TrackFiltersBar({ filters, onChange, onNewTrack, onDeleteSelecte
     }
   };
 
+  const handleFindDuplicates = async () => {
+    setFindingDupes(true);
+    try {
+      const groups = await findDuplicateGroups();
+      if (groups.length === 0) {
+        toast.info('Nessun duplicato trovato');
+        onDuplicatesFound?.(new Set());
+        return;
+      }
+      const allDupeIds = new Set<string>();
+      for (const g of groups) {
+        for (const id of g.duplicateIds) allDupeIds.add(id);
+      }
+      onDuplicatesFound?.(allDupeIds);
+      toast.info(`Trovati ${groups.length} gruppi di duplicati (${allDupeIds.size} brani da rimuovere)`);
+    } catch (err: any) {
+      toast.error('Errore: ' + err.message);
+    } finally {
+      setFindingDupes(false);
+    }
+  };
+
+  const handleDeleteDuplicates = async () => {
+    if (!duplicateIds || duplicateIds.size === 0) return;
+    const ids = Array.from(duplicateIds);
+    deleteTracks.mutate(ids, {
+      onSuccess: () => {
+        toast.success(`${ids.length} duplicati eliminati`);
+        onDuplicatesFound?.(new Set());
+        queryClient.invalidateQueries({ queryKey: ['tracks'] });
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col border-b border-border bg-card/80">
       <div className="flex items-center gap-2 p-2">
