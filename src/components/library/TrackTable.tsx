@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { analyzeAudioFile } from '@/lib/audioAnalysis';
 
 interface TrackTableProps {
   tracks: Track[];
@@ -30,6 +31,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
   const { t } = useI18n();
   const [uploadingTrackId, setUploadingTrackId] = useState<string | null>(null);
   const [uploadedTrackId, setUploadedTrackId] = useState<string | null>(null);
+  const [analyzingTrackId, setAnalyzingTrackId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadTargetRef = useRef<string | null>(null);
@@ -48,8 +50,9 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
     { field: 'status', label: t('col.status'), width: 'w-24' },
   ];
 
-  const allSelected = tracks.length > 0 && tracks.every(t => selectedIds.has(t.id));
-  const someSelected = tracks.some(t => selectedIds.has(t.id)) && !allSelected;
+  const ids = selectedIds || new Set<string>();
+  const allSelected = tracks.length > 0 && tracks.every(t => ids.has(t.id));
+  const someSelected = tracks.some(t => ids.has(t.id)) && !allSelected;
 
   const toggleAll = () => {
     if (allSelected) {
@@ -94,6 +97,19 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
       toast.success(t('player.audioUploaded'));
       setUploadedTrackId(trackId);
       setTimeout(() => setUploadedTrackId(null), 2000);
+
+      // Auto-analyze BPM and key
+      setAnalyzingTrackId(trackId);
+      toast.loading('Analisi BPM e tonalità...', { id: 'audio-analysis' });
+      try {
+        const result = await analyzeAudioFile(file);
+        updateTrack.mutate({ id: trackId, updates: { bpm: result.bpm, key: result.key } });
+        toast.success(`BPM: ${result.bpm} | Tonalità: ${result.key} rilevati automaticamente`, { id: 'audio-analysis' });
+      } catch (analysisErr: any) {
+        toast.error('Errore analisi audio: ' + analysisErr.message, { id: 'audio-analysis' });
+      } finally {
+        setAnalyzingTrackId(null);
+      }
     } catch (err: any) {
       toast.error((t('player.uploadError') || 'Upload error') + ': ' + err.message);
     } finally {
