@@ -13,7 +13,7 @@ import vinylLogo from '@/assets/vinyl-logo.avif';
 
 export default function SettingsPage() {
   const { t, lang, setLang } = useI18n();
-  const navigate = useNavigate();
+  
   const { data: settings } = useSettings();
   const upsertSetting = useUpsertSetting();
 
