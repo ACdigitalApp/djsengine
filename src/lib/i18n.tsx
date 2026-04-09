@@ -63,9 +63,9 @@ const translations = {
   'sidebar.library': { en: 'Library', it: 'Libreria' },
   'sidebar.allTracks': { en: 'All Tracks', it: 'Tutti i Brani' },
   'sidebar.newArrivals': { en: 'New Arrivals', it: 'Nuovi Arrivi' },
-  'sidebar.trending': { en: 'Trending', it: 'In Tendenza' },
-  'sidebar.warmUp': { en: 'Warm Up', it: 'Warm Up' },
-  'sidebar.peakTime': { en: 'Peak Time', it: 'Peak Time' },
+  'sidebar.trending': { en: 'Trending', it: 'Tendenze' },
+  'sidebar.warmUp': { en: 'Warm Up', it: 'Riscaldamento' },
+  'sidebar.peakTime': { en: 'Peak Time', it: 'Momento Clou' },
   'sidebar.riempipista': { en: 'Riempipista', it: 'Riempipista' },
   'sidebar.toReview': { en: 'To Review', it: 'Da Valutare' },
   'sidebar.approved': { en: 'Approved', it: 'Approvati' },
@@ -74,6 +74,7 @@ const translations = {
   'sidebar.sources': { en: 'Sources', it: 'Sorgenti' },
   'sidebar.localLibrary': { en: 'Local Library', it: 'Libreria Locale' },
   'sidebar.otherSources': { en: 'Other Sources', it: 'Altre Sorgenti' },
+  'sidebar.virtualDj': { en: 'Virtual DJ', it: 'Virtual DJ' },
   'sidebar.soon': { en: 'Soon', it: 'Presto' },
 
   // Track table columns
@@ -200,15 +201,15 @@ const translations = {
   // Crates
   'crates.title': { en: 'Smart Crates', it: 'Crate Intelligenti' },
   'crates.subtitle': { en: 'Auto-organized collections based on scoring rules', it: 'Collezioni automatiche basate su regole di punteggio' },
-  'crates.warmUp': { en: 'Warm Up', it: 'Warm Up' },
+  'crates.warmUp': { en: 'Warm Up', it: 'Riscaldamento' },
   'crates.warmUpDesc': { en: 'Low energy, smooth openers', it: 'Bassa energia, aperture fluide' },
-  'crates.primeTime': { en: 'Prime Time', it: 'Prime Time' },
+  'crates.primeTime': { en: 'Prime Time', it: 'Ora di Punta' },
   'crates.primeTimeDesc': { en: 'Building momentum', it: 'Costruzione del momento' },
-  'crates.peakTime': { en: 'Peak Time', it: 'Peak Time' },
+  'crates.peakTime': { en: 'Peak Time', it: 'Momento Clou' },
   'crates.peakTimeDesc': { en: 'Maximum energy bangers', it: 'Hit ad alta energia' },
   'crates.closing': { en: 'Closing', it: 'Chiusura' },
   'crates.closingDesc': { en: 'Wind down tracks', it: 'Brani per chiudere' },
-  'crates.newHeat': { en: 'New Heat', it: 'Novità Calde' },
+  'crates.newHeat': { en: 'New Heat', it: 'Novità Hot' },
   'crates.newHeatDesc': { en: 'Fresh high-scoring tracks', it: 'Novità con punteggio alto' },
   'crates.safeMix': { en: 'Safe Mix', it: 'Mix Sicuro' },
   'crates.safeMixDesc': { en: 'Proven crowd pleasers', it: 'Successi comprovati per il pubblico' },
@@ -223,7 +224,7 @@ const translations = {
   'crates.gems': { en: 'Underused Gems', it: 'Gemme Nascoste' },
   'crates.gemsDesc': { en: 'Great tracks, rarely played', it: 'Ottimi brani, raramente suonati' },
   'crates.moreTracks': { en: 'more tracks', it: 'altri brani' },
-  'crates.noTracks': { en: 'No matching tracks', it: 'Nessun brano corrispondente' },
+  'crates.noTracks': { en: 'No matching tracks', it: 'Nessun brano trovato' },
 
   // Sources
   'sources.title': { en: 'Sources', it: 'Sorgenti' },
@@ -262,9 +263,9 @@ const translations = {
   'detail.recommendedNext': { en: 'Recommended Next', it: 'Consigliati Dopo' },
 
   // Use cases
-  'useCase.warmUp': { en: 'Warm Up', it: 'Warm Up' },
+  'useCase.warmUp': { en: 'Warm Up', it: 'Riscaldamento' },
   'useCase.midSet': { en: 'Mid Set', it: 'Mid Set' },
-  'useCase.peakTime': { en: 'Peak Time', it: 'Peak Time' },
+  'useCase.peakTime': { en: 'Peak Time', it: 'Momento Clou' },
   'useCase.closing': { en: 'Closing', it: 'Chiusura' },
 
   // Admin / User Management
