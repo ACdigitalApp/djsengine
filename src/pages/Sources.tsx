@@ -1,14 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { adapters } from '@/lib/adapters';
-import { Radio, AlertCircle, Link, Unlink, Search, Loader2, Plus } from 'lucide-react';
+import { Radio, AlertCircle, Link, Unlink, Search, Loader2, Plus, Upload, HardDrive } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { startTidalOAuth, isTidalConnected, disconnectTidal, searchTidalTracks } from '@/lib/tidal';
 import { supabase } from '@/integrations/supabase/client';
-import { useUpdateTrack } from '@/hooks/useTracks';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Progress } from '@/components/ui/progress';
+import { parseVdjXml, convertKeyToCamelot } from '@/lib/adapters/virtualdj';
 
 interface TidalSearchResult {
   externalId: string;
@@ -32,10 +33,13 @@ export default function SourcesPage() {
   const [searching, setSearching] = useState(false);
   const [importing, setImporting] = useState<string | null>(null);
 
-  const handleConnectTidal = () => {
-    startTidalOAuth();
-  };
+  // VDJ import state
+  const [vdjImporting, setVdjImporting] = useState(false);
+  const [vdjProgress, setVdjProgress] = useState(0);
+  const [vdjTotal, setVdjTotal] = useState(0);
+  const [vdjDone, setVdjDone] = useState(0);
 
+  const handleConnectTidal = () => { startTidalOAuth(); };
   const handleDisconnectTidal = () => {
     disconnectTidal();
     setTidalConnected(false);
@@ -80,6 +84,90 @@ export default function SourcesPage() {
     }
   };
 
+  const handleVdjImport = async () => {
+    try {
+      // Use File System Access API or fallback to file input
+      let file: File;
+      if ('showOpenFilePicker' in window) {
+        const [handle] = await (window as any).showOpenFilePicker({
+          types: [{ description: 'VirtualDJ Database', accept: { 'text/xml': ['.xml'] } }],
+          multiple: false,
+        });
+        file = await handle.getFile();
+      } else {
+        // Fallback for browsers without File System Access API
+        file = await new Promise<File>((resolve, reject) => {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.accept = '.xml';
+          input.onchange = () => {
+            if (input.files?.[0]) resolve(input.files[0]);
+            else reject(new Error('No file selected'));
+          };
+          input.click();
+        });
+      }
+
+      setVdjImporting(true);
+      setVdjProgress(0);
+      setVdjDone(0);
+
+      const xmlText = await file.text();
+      const vdjTracks = parseVdjXml(xmlText);
+
+      if (vdjTracks.length === 0) {
+        toast.warning(t('sources.vdjNoTracks'));
+        setVdjImporting(false);
+        return;
+      }
+
+      setVdjTotal(vdjTracks.length);
+
+      // Import in batches of 50
+      const BATCH_SIZE = 50;
+      let imported = 0;
+
+      for (let i = 0; i < vdjTracks.length; i += BATCH_SIZE) {
+        const batch = vdjTracks.slice(i, i + BATCH_SIZE).map(vt => ({
+          title: vt.title,
+          artist: vt.artist,
+          bpm: vt.bpm || null,
+          key: convertKeyToCamelot(vt.key),
+          genre: vt.genre || null,
+          duration: vt.duration || null,
+          source: 'virtualdj',
+          source_track_id: vt.filePath || null,
+          status: 'to_review' as const,
+        }));
+
+        const { error } = await supabase.from('tracks').insert(batch);
+        if (error) {
+          console.error('Batch insert error:', error);
+          // Continue with next batch
+        }
+
+        imported += batch.length;
+        setVdjDone(imported);
+        setVdjProgress(Math.round((imported / vdjTracks.length) * 100));
+      }
+
+      toast.success(`${imported} ${t('sources.vdjSuccess')}`);
+      queryClient.invalidateQueries({ queryKey: ['tracks'] });
+    } catch (err: any) {
+      if (err.name !== 'AbortError') {
+        toast.error(t('sources.vdjError'));
+        console.error(err);
+      }
+    } finally {
+      setVdjImporting(false);
+    }
+  };
+
+  const getAdapterIcon = (type: string) => {
+    if (type === 'virtualdj') return <HardDrive className="h-5 w-5" />;
+    return <Radio className="h-5 w-5" />;
+  };
+
   return (
     <div className="p-6 max-w-4xl space-y-6">
       <div>
@@ -90,13 +178,14 @@ export default function SourcesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {sourceList.map(adapter => {
           const isTidal = adapter.type === 'tidal';
+          const isVdj = adapter.type === 'virtualdj';
           const isConnected = isTidal ? tidalConnected : adapter.enabled;
 
           return (
             <div key={adapter.type} className="rounded-lg bg-card border border-border p-5">
               <div className="flex items-start gap-3">
                 <div className={`p-2.5 rounded-md ${isConnected ? 'bg-success/15 text-success' : 'bg-secondary text-muted-foreground'}`}>
-                  <Radio className="h-5 w-5" />
+                  {getAdapterIcon(adapter.type)}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
@@ -106,7 +195,11 @@ export default function SourcesPage() {
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {isConnected ? t('sources.activeDesc') : (isTidal ? t('sources.tidalDesc') : t('sources.placeholderDesc'))}
+                    {isVdj
+                      ? t('sources.vdjDesc')
+                      : isConnected
+                        ? t('sources.activeDesc')
+                        : (isTidal ? t('sources.tidalDesc') : t('sources.placeholderDesc'))}
                   </p>
 
                   {/* Tidal OAuth buttons */}
@@ -126,7 +219,35 @@ export default function SourcesPage() {
                     </div>
                   )}
 
-                  {!isConnected && !isTidal && (
+                  {/* VDJ Import button */}
+                  {isVdj && (
+                    <div className="mt-3 space-y-2">
+                      <Button
+                        size="sm"
+                        onClick={handleVdjImport}
+                        disabled={vdjImporting}
+                        className="text-xs gap-1.5"
+                      >
+                        {vdjImporting ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Upload className="h-3.5 w-3.5" />
+                        )}
+                        {vdjImporting ? t('sources.vdjImporting') : t('sources.vdjImport')}
+                      </Button>
+
+                      {vdjImporting && vdjTotal > 0 && (
+                        <div className="space-y-1">
+                          <Progress value={vdjProgress} className="h-2" />
+                          <p className="text-[10px] text-muted-foreground">
+                            {t('sources.vdjProgress')}: {vdjDone} / {vdjTotal}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {!isConnected && !isTidal && !isVdj && (
                     <div className="mt-3 flex items-start gap-2 p-2.5 rounded-md bg-warning/10 border border-warning/20">
                       <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
                       <p className="text-[10px] text-warning/80">{t('sources.mockWarning')}</p>
