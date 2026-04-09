@@ -28,6 +28,7 @@ export interface Track {
   affinity_score: number | null;
   status: string | null;
   notes: string | null;
+  audio_url: string | null;
   created_at: string;
   updated_at: string;
 }

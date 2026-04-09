@@ -252,6 +252,7 @@ export type Database = {
           approved: boolean | null
           artist: string
           artwork_url: string | null
+          audio_url: string | null
           bpm: number | null
           created_at: string
           crowd_score: number | null
@@ -285,6 +286,7 @@ export type Database = {
           approved?: boolean | null
           artist: string
           artwork_url?: string | null
+          audio_url?: string | null
           bpm?: number | null
           created_at?: string
           crowd_score?: number | null
@@ -318,6 +320,7 @@ export type Database = {
           approved?: boolean | null
           artist?: string
           artwork_url?: string | null
+          audio_url?: string | null
           bpm?: number | null
           created_at?: string
           crowd_score?: number | null

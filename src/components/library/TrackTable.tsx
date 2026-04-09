@@ -38,7 +38,7 @@ export function TrackTable({ tracks, selectedTrackId, onSelectTrack, sortField, 
   return (
     <div className="flex-1 overflow-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3">
+      <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3 pl-[52px]">
         {COLUMNS.map(col => (
           <button
             key={col.field}
@@ -74,6 +74,14 @@ export function TrackTable({ tracks, selectedTrackId, onSelectTrack, sortField, 
                 isHighCandidate && !isSelected && "bg-primary/[0.03]"
               )}
             >
+              {/* Artwork */}
+              <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-secondary mr-2">
+                {track.artwork_url ? (
+                  <img src={track.artwork_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">🎵</div>
+                )}
+              </div>
               {/* Title / Artist */}
               <div className={cn("min-w-[200px] flex-[2] pr-2")}>
                 <div className="text-sm font-medium text-foreground truncate">{track.title}</div>
