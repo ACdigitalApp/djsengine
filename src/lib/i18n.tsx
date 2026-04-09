@@ -262,9 +262,9 @@ const translations = {
   'detail.recommendedNext': { en: 'Recommended Next', it: 'Consigliati Dopo' },
 
   // Use cases
-  'useCase.warmUp': { en: 'Warm Up', it: 'Warm Up' },
+  'useCase.warmUp': { en: 'Warm Up', it: 'Riscaldamento' },
   'useCase.midSet': { en: 'Mid Set', it: 'Mid Set' },
-  'useCase.peakTime': { en: 'Peak Time', it: 'Peak Time' },
+  'useCase.peakTime': { en: 'Peak Time', it: 'Momento Clou' },
   'useCase.closing': { en: 'Closing', it: 'Chiusura' },
 
   // Admin / User Management
