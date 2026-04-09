@@ -1,13 +1,17 @@
-import { useState, useMemo } from 'react';
 import type { Track, SortField, SortDirection } from '@/types/track';
 import { cn } from '@/lib/utils';
 import { StatusBadge, EnergyBar, ScoreBadge } from '@/components/ui/score-badge';
-import { ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, Play, Pause, ListPlus, Star } from 'lucide-react';
+import { useUpdateTrack } from '@/hooks/useTracks';
+import { toast } from 'sonner';
 
 interface TrackTableProps {
   tracks: Track[];
   selectedTrackId: string | null;
+  playingTrackId: string | null;
   onSelectTrack: (track: Track) => void;
+  onPlayTrack: (track: Track) => void;
+  onAddToPlaylist: (track: Track) => void;
   sortField: SortField;
   sortDir: SortDirection;
   onSort: (field: SortField) => void;
@@ -27,18 +31,21 @@ const COLUMNS: { field: SortField; label: string; width: string }[] = [
   { field: 'status', label: 'Status', width: 'w-24' },
 ];
 
-function formatDuration(secs: number | null): string {
-  if (!secs) return '-';
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
+export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort }: TrackTableProps) {
+  const updateTrack = useUpdateTrack();
 
-export function TrackTable({ tracks, selectedTrackId, onSelectTrack, sortField, sortDir, onSort }: TrackTableProps) {
+  const handleSave = (e: React.MouseEvent, track: Track) => {
+    e.stopPropagation();
+    updateTrack.mutate({ id: track.id, updates: { favorite: !track.favorite } });
+    toast.success(track.favorite ? 'Rimosso dai preferiti' : 'Salvato nei preferiti');
+  };
+
   return (
     <div className="flex-1 overflow-auto">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3 pl-[52px]">
+      <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3">
+        {/* Spacer for play + artwork */}
+        <div className="w-[72px] shrink-0" />
         {COLUMNS.map(col => (
           <button
             key={col.field}
@@ -57,31 +64,47 @@ export function TrackTable({ tracks, selectedTrackId, onSelectTrack, sortField, 
             )}
           </button>
         ))}
+        {/* Spacer for action buttons */}
+        <div className="w-[68px] shrink-0" />
       </div>
 
       {/* Rows */}
       <div className="divide-y divide-border/50">
         {tracks.map(track => {
           const isSelected = track.id === selectedTrackId;
+          const isPlaying = track.id === playingTrackId;
           const isHighCandidate = (track.crowd_score || 0) >= 8 && (track.affinity_score || 0) >= 7;
           return (
-            <button
+            <div
               key={track.id}
               onClick={() => onSelectTrack(track)}
               className={cn(
-                "w-full flex items-center gap-0 px-3 py-2 text-left transition-colors",
+                "w-full flex items-center gap-0 px-3 py-1.5 text-left transition-colors cursor-pointer",
                 isSelected ? "bg-primary/10 border-l-2 border-l-primary" : "hover:bg-secondary/50",
                 isHighCandidate && !isSelected && "bg-primary/[0.03]"
               )}
             >
+              {/* Play button */}
+              <button
+                onClick={(e) => { e.stopPropagation(); onPlayTrack(track); }}
+                className={cn(
+                  "w-8 h-8 shrink-0 rounded-full flex items-center justify-center mr-1 transition-colors",
+                  isPlaying ? "bg-primary text-primary-foreground" : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                )}
+                title={track.audio_url ? "Play" : "Nessun audio"}
+              >
+                {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+              </button>
+
               {/* Artwork */}
-              <div className="w-10 h-10 shrink-0 rounded overflow-hidden bg-secondary mr-2">
+              <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-secondary mr-2">
                 {track.artwork_url ? (
                   <img src={track.artwork_url} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">🎵</div>
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-[10px]">🎵</div>
                 )}
               </div>
+
               {/* Title / Artist */}
               <div className={cn("min-w-[200px] flex-[2] pr-2")}>
                 <div className="text-sm font-medium text-foreground truncate">{track.title}</div>
@@ -139,7 +162,28 @@ export function TrackTable({ tracks, selectedTrackId, onSelectTrack, sortField, 
               <div className="w-24 shrink-0">
                 <StatusBadge status={track.status} />
               </div>
-            </button>
+
+              {/* Action buttons */}
+              <div className="w-[68px] shrink-0 flex items-center gap-1 justify-end">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onAddToPlaylist(track); }}
+                  className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                  title="Aggiungi a playlist"
+                >
+                  <ListPlus className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  onClick={(e) => handleSave(e, track)}
+                  className={cn(
+                    "p-1.5 rounded hover:bg-secondary transition-colors",
+                    track.favorite ? "text-warning" : "text-muted-foreground hover:text-foreground"
+                  )}
+                  title={track.favorite ? "Rimuovi dai preferiti" : "Salva"}
+                >
+                  <Star className={cn("h-3.5 w-3.5", track.favorite && "fill-current")} />
+                </button>
+              </div>
+            </div>
           );
         })}
         {tracks.length === 0 && (
