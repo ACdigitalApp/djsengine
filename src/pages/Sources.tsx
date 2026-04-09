@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { adapters } from '@/lib/adapters';
 import { Radio, AlertCircle, Link, Unlink, Search, Loader2, Plus } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import { startTidalOAuth, exchangeTidalCode, isTidalConnected, disconnectTidal, searchTidalTracks } from '@/lib/tidal';
+import { startTidalOAuth, isTidalConnected, disconnectTidal, searchTidalTracks } from '@/lib/tidal';
 import { supabase } from '@/integrations/supabase/client';
 import { useUpdateTrack } from '@/hooks/useTracks';
 import { useQueryClient } from '@tanstack/react-query';
@@ -32,28 +32,25 @@ export default function SourcesPage() {
   const [searching, setSearching] = useState(false);
   const [importing, setImporting] = useState<string | null>(null);
 
-  // Handle OAuth callback
+  // Listen for OAuth popup postMessage
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    if (code && !tidalConnected) {
-      setExchanging(true);
-      exchangeTidalCode(code)
-        .then(() => {
-          setTidalConnected(true);
-          toast.success(t('sources.tidalConnected'));
-          // Clean URL
-          window.history.replaceState({}, '', window.location.pathname);
-        })
-        .catch((err) => {
-          toast.error(`${t('sources.tidalError')}: ${err.message}`);
-        })
-        .finally(() => setExchanging(false));
-    }
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === 'tidal_oauth_success') {
+        setTidalConnected(true);
+        toast.success(t('sources.tidalConnected'));
+      } else if (event.data?.type === 'tidal_oauth_error') {
+        toast.error(`${t('sources.tidalError')}: ${event.data.error}`);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  const handleConnectTidal = () => {
-    startTidalOAuth();
+  const handleConnectTidal = async () => {
+    await startTidalOAuth();
   };
 
   const handleDisconnectTidal = () => {
