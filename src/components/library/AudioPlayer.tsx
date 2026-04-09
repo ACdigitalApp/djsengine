@@ -4,6 +4,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Upload } from 'lu
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useUpdateTrack } from '@/hooks/useTracks';
+import { useI18n } from '@/lib/i18n';
 import { toast } from 'sonner';
 
 interface AudioPlayerProps {
