@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Download, Music, Lightbulb, RefreshCw, Disc3, CheckCircle2 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import vinylLogo from '@/assets/vinyl-logo.avif';
-import djEngineLogo from '@/assets/dj-engine-logo.png';
+import djEngineLogo from '@/assets/dj-engine-logo-clean.png';
 
 export default function IndexPage() {
   const { t } = useI18n();
