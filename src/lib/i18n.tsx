@@ -225,6 +225,18 @@ const translations = {
   'sources.adapterMethods': { en: 'Adapter methods', it: 'Metodi adattatore' },
   'sources.archNotes': { en: 'Architecture Notes', it: 'Note Architettura' },
   'sources.archDesc': { en: 'Each source adapter implements a common interface with methods for fetching trending tracks, new releases, searching, and mapping external data to the internal track model. The adapter pattern allows adding new sources without modifying existing code. Placeholder adapters return mock data and are clearly marked as non-functional.', it: 'Ogni adattatore sorgente implementa un\'interfaccia comune con metodi per ottenere brani in tendenza, nuove uscite, ricerca e mappatura dei dati esterni nel modello interno. Il pattern adapter consente di aggiungere nuove sorgenti senza modificare il codice esistente.' },
+  'sources.connectTidal': { en: 'Connect TIDAL', it: 'Connetti TIDAL' },
+  'sources.disconnectTidal': { en: 'Disconnect TIDAL', it: 'Disconnetti TIDAL' },
+  'sources.tidalConnected': { en: 'TIDAL connected!', it: 'TIDAL connesso!' },
+  'sources.tidalDisconnected': { en: 'TIDAL disconnected', it: 'TIDAL disconnesso' },
+  'sources.tidalError': { en: 'TIDAL connection error', it: 'Errore connessione TIDAL' },
+  'sources.tidalDesc': { en: 'Connect your TIDAL account to search and import tracks.', it: 'Connetti il tuo account TIDAL per cercare e importare brani.' },
+  'sources.connecting': { en: 'Connecting...', it: 'Connessione...' },
+  'sources.tidalSearch': { en: 'Search TIDAL', it: 'Cerca su TIDAL' },
+  'sources.tidalSearchPlaceholder': { en: 'Search tracks on TIDAL...', it: 'Cerca brani su TIDAL...' },
+  'sources.search': { en: 'Search', it: 'Cerca' },
+  'sources.import': { en: 'Import', it: 'Importa' },
+  'sources.imported': { en: 'imported to library', it: 'importato in libreria' },
 
   // Track detail
   'detail.backToLibrary': { en: 'Back to Library', it: 'Torna alla Libreria' },
