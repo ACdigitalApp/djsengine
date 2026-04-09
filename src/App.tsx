@@ -1,10 +1,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { AppLayout } from "@/components/layout/AppLayout";
+import DashboardPage from "./pages/Dashboard";
+import LibraryPage from "./pages/Library";
+import TrackDetailPage from "./pages/TrackDetail";
+import CratesPage from "./pages/Crates";
+import SourcesPage from "./pages/Sources";
+import SettingsPage from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -14,11 +20,18 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppLayout>
+          <Routes>
+            <Route path="/" element={<Navigate to="/library" replace />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/library" element={<LibraryPage />} />
+            <Route path="/track/:id" element={<TrackDetailPage />} />
+            <Route path="/crates" element={<CratesPage />} />
+            <Route path="/sources" element={<SourcesPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AppLayout>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
