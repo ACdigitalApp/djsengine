@@ -3,7 +3,7 @@ import { useI18n } from '@/lib/i18n';
 import { useSettings, useUpsertSetting } from '@/hooks/useSettings';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
-import { Save, Globe, User, Key, Crown } from 'lucide-react';
+import { Save, Globe, User, Key, Crown, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 import type { RecommendationWeights } from '@/types/track';
@@ -27,12 +27,17 @@ export default function SettingsPage() {
   const [newPassword, setNewPassword] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [resetStep, setResetStep] = useState(0); // 0=idle, 1=first confirm, 2=second confirm
+  const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (user) {
         setUserEmail(user.email || '');
         setUserName(user.user_metadata?.display_name || user.email?.split('@')[0] || '');
+        const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'admin').maybeSingle();
+        setIsAdmin(!!data);
       }
     });
   }, []);
@@ -70,6 +75,15 @@ export default function SettingsPage() {
     setShowPasswordForm(false);
   };
 
+  const handleResetLibrary = async () => {
+    if (resetStep < 2) { setResetStep(s => s + 1); return; }
+    setResetting(true);
+    const { error } = await supabase.from('tracks').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    setResetting(false);
+    setResetStep(0);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Libreria resettata con successo');
+  };
 
   const total = weights.bpm + weights.key + weights.energy + weights.affinity + weights.crowd + weights.personalFit;
 
@@ -195,6 +209,47 @@ export default function SettingsPage() {
         <SettingSlider label={t('settings.freshnessImportance')} value={freshnessImportance} min={0} max={100} onChange={setFreshnessImportance} unit="%" />
         <SettingSlider label={t('settings.crowdImportance')} value={crowdImportance} min={0} max={100} onChange={setCrowdImportance} unit="%" />
       </section>
+
+      {isAdmin && (
+        <section className="bg-card rounded-xl border border-destructive/30 p-6 space-y-4">
+          <h2 className="text-lg font-heading font-semibold text-destructive flex items-center gap-2">
+            <Trash2 className="h-5 w-5" /> Zona Pericolosa
+          </h2>
+          <p className="text-xs text-muted-foreground">Elimina tutti i brani dalla libreria. Questa azione è irreversibile.</p>
+          <div className="flex items-center gap-3">
+            {resetStep === 0 && (
+              <button
+                onClick={() => setResetStep(1)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-destructive text-destructive text-sm font-medium hover:bg-destructive/10 transition-colors"
+              >
+                <Trash2 className="h-4 w-4" /> Resetta Libreria
+              </button>
+            )}
+            {resetStep === 1 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-warning font-medium">Sei sicuro?</span>
+                <button onClick={handleResetLibrary} className="px-4 py-2 rounded-lg bg-destructive/20 text-destructive text-sm font-medium hover:bg-destructive/30 transition-colors">
+                  Sì, continua
+                </button>
+                <button onClick={() => setResetStep(0)} className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors">
+                  Annulla
+                </button>
+              </div>
+            )}
+            {resetStep === 2 && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-destructive font-bold">⚠️ ULTIMA CONFERMA — tutti i brani verranno eliminati!</span>
+                <button onClick={handleResetLibrary} disabled={resetting} className="px-4 py-2 rounded-lg bg-destructive text-destructive-foreground text-sm font-medium hover:bg-destructive/90 transition-colors disabled:opacity-50">
+                  {resetting ? 'Eliminazione...' : 'Elimina tutto'}
+                </button>
+                <button onClick={() => setResetStep(0)} className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-secondary transition-colors">
+                  Annulla
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       <button
         onClick={handleSave}
