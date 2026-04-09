@@ -237,6 +237,13 @@ const translations = {
   'sources.search': { en: 'Search', it: 'Cerca' },
   'sources.import': { en: 'Import', it: 'Importa' },
   'sources.imported': { en: 'imported to library', it: 'importato in libreria' },
+  'sources.vdjImport': { en: 'Import VDJ Library', it: 'Importa Libreria VDJ' },
+  'sources.vdjDesc': { en: 'Import tracks from your VirtualDJ database.xml file.', it: 'Importa brani dal tuo file database.xml di VirtualDJ.' },
+  'sources.vdjImporting': { en: 'Importing...', it: 'Importazione...' },
+  'sources.vdjSuccess': { en: 'tracks imported from VirtualDJ', it: 'brani importati da VirtualDJ' },
+  'sources.vdjError': { en: 'Error importing VDJ library', it: 'Errore importazione libreria VDJ' },
+  'sources.vdjNoTracks': { en: 'No tracks found in the file', it: 'Nessun brano trovato nel file' },
+  'sources.vdjProgress': { en: 'Importing tracks', it: 'Importazione brani' },
 
   // Track detail
   'detail.backToLibrary': { en: 'Back to Library', it: 'Torna alla Libreria' },
