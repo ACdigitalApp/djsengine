@@ -97,6 +97,19 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
       toast.success(t('player.audioUploaded'));
       setUploadedTrackId(trackId);
       setTimeout(() => setUploadedTrackId(null), 2000);
+
+      // Auto-analyze BPM and key
+      setAnalyzingTrackId(trackId);
+      toast.loading('Analisi BPM e tonalità...', { id: 'audio-analysis' });
+      try {
+        const result = await analyzeAudioFile(file);
+        updateTrack.mutate({ id: trackId, updates: { bpm: result.bpm, key: result.key } });
+        toast.success(`BPM: ${result.bpm} | Tonalità: ${result.key} rilevati automaticamente`, { id: 'audio-analysis' });
+      } catch (analysisErr: any) {
+        toast.error('Errore analisi audio: ' + analysisErr.message, { id: 'audio-analysis' });
+      } finally {
+        setAnalyzingTrackId(null);
+      }
     } catch (err: any) {
       toast.error((t('player.uploadError') || 'Upload error') + ': ' + err.message);
     } finally {
