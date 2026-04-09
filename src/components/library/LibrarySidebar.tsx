@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { 
   Library, Sparkles, TrendingUp, Sun, Flame, Star as StarIcon,
-  CheckCircle2, XCircle, Heart, Clock, Folder, Upload, Loader2, HardDrive
+  CheckCircle2, XCircle, Heart, Clock, Folder, Upload, Loader2, HardDrive, Disc3
 } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
@@ -107,6 +107,7 @@ export function LibrarySidebar({ activeFilter, onFilterChange }: LibrarySidebarP
 
   const SOURCE_ITEMS = [
     { id: 'source_local', label: t('sidebar.localLibrary'), icon: Folder },
+    { id: 'source_virtualdj', label: 'Virtual DJ', icon: Disc3 },
     { id: 'source_tidal', label: 'TIDAL', icon: Folder, placeholder: true },
     { id: 'source_mixupload', label: 'Mixupload', icon: Folder, placeholder: true },
     { id: 'source_other', label: t('sidebar.otherSources'), icon: Folder, placeholder: true },

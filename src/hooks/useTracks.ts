@@ -16,7 +16,7 @@ export function useTracks(filters?: TrackFilters, sortField?: SortField, sortDir
       if (filters?.key) query = query.eq('key', filters.key);
       if (filters?.genre) query = query.eq('genre', filters.genre);
       if (filters?.energy) query = query.eq('energy', filters.energy);
-      if (filters?.source) query = query.eq('source', filters.source);
+      if (filters?.source) query = query.ilike('source', filters.source);
       if (filters?.status) query = query.eq('status', filters.status);
       
       if (sortField) {

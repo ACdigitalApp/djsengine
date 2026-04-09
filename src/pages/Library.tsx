@@ -39,6 +39,7 @@ export default function LibraryPage() {
       case 'approved': f.status = 'approved'; break;
       case 'rejected': f.status = 'rejected'; break;
       case 'source_local': f.source = 'local'; break;
+      case 'source_virtualdj': f.source = 'virtualdj'; break;
       case 'source_tidal': f.source = 'tidal'; break;
       case 'source_mixupload': f.source = 'mixupload'; break;
     }
