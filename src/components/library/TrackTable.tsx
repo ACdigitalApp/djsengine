@@ -1,10 +1,12 @@
+import { useRef, useState } from 'react';
 import type { Track, SortField, SortDirection } from '@/types/track';
 import { cn } from '@/lib/utils';
 import { StatusBadge, EnergyBar, ScoreBadge } from '@/components/ui/score-badge';
-import { ArrowUpDown, ArrowUp, ArrowDown, Play, Pause, ListPlus, Star } from 'lucide-react';
+import { ArrowUpDown, ArrowUp, ArrowDown, Play, Pause, ListPlus, Star, Paperclip, Loader2, CheckCircle2 } from 'lucide-react';
 import { useUpdateTrack } from '@/hooks/useTracks';
 import { useI18n } from '@/lib/i18n';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TrackTableProps {
   tracks: Track[];
