@@ -26,7 +26,7 @@ export default function SourcesPage() {
   const sourceList = Object.values(adapters);
 
   const [tidalConnected, setTidalConnected] = useState(isTidalConnected());
-  const [exchanging, setExchanging] = useState(false);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<TidalSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
