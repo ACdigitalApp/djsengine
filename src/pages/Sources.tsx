@@ -129,12 +129,7 @@ export default function SourcesPage() {
                   {/* Tidal OAuth buttons */}
                   {isTidal && (
                     <div className="mt-3">
-                      {exchanging ? (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          {t('sources.connecting')}
-                        </div>
-                      ) : tidalConnected ? (
+                      {tidalConnected ? (
                         <Button variant="outline" size="sm" onClick={handleDisconnectTidal} className="text-xs gap-1.5">
                           <Unlink className="h-3.5 w-3.5" />
                           {t('sources.disconnectTidal')}
