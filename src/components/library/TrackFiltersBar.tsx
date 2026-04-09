@@ -4,12 +4,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import type { TrackFilters } from '@/types/track';
-import { Search, X, Plus, Trash2, Music, Loader2 } from 'lucide-react';
+import { Search, X, Plus, Trash2, Music, Loader2, Copy } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
-import { useUpdateTrack } from '@/hooks/useTracks';
+import { useUpdateTrack, useDeleteTracks } from '@/hooks/useTracks';
 import { analyzeAudioFile } from '@/lib/audioAnalysis';
 import { toast } from 'sonner';
+import { findDuplicateGroups } from '@/lib/dedup';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TrackFiltersBarProps {
   filters: TrackFilters;
@@ -17,18 +19,23 @@ interface TrackFiltersBarProps {
   onNewTrack: () => void;
   onDeleteSelected: () => void;
   selectedCount: number;
+  duplicateIds?: Set<string>;
+  onDuplicatesFound?: (ids: Set<string>) => void;
 }
 
 const KEYS = ['1A','1B','2A','2B','3A','3B','4A','4B','5A','5B','6A','6B','7A','7B','8A','8B','9A','9B','10A','10B','11A','11B','12A','12B'];
 const GENRES = ['House','Tech House','Techno','Progressive House','Vocal House','French House','UK Garage','Disco','Nu Disco','Electronica','Electro House','Breaks','Trance','Deep House','Melodic Techno','Downtempo','Dance Pop','EDM'];
 
-export function TrackFiltersBar({ filters, onChange, onNewTrack, onDeleteSelected, selectedCount }: TrackFiltersBarProps) {
+export function TrackFiltersBar({ filters, onChange, onNewTrack, onDeleteSelected, selectedCount, duplicateIds, onDuplicatesFound }: TrackFiltersBarProps) {
   const { t } = useI18n();
   const updateTrack = useUpdateTrack();
+  const deleteTracks = useDeleteTracks();
+  const queryClient = useQueryClient();
   const [analyzing, setAnalyzing] = useState(false);
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [analyzeTotal, setAnalyzeTotal] = useState(0);
   const [analyzeCurrent, setAnalyzeCurrent] = useState(0);
+  const [findingDupes, setFindingDupes] = useState(false);
 
   const update = (partial: Partial<TrackFilters>) => onChange({ ...filters, ...partial });
   const hasFilters = filters.search || filters.key || filters.genre || filters.energy;
