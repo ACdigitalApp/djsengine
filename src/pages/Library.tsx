@@ -204,6 +204,7 @@ export default function LibraryPage() {
               onSort={handleSort}
               selectedIds={selectedIds}
               onSelectionChange={setSelectedIds}
+              duplicateIds={duplicateIds}
             />
           )}
         </div>
