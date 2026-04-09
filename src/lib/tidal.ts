@@ -34,9 +34,9 @@ function base64urlEncode(buffer: ArrayBuffer): string {
 }
 
 // --- Public API ---
-export async function startTidalOAuth(): Promise<Window | null> {
+export async function startTidalOAuth() {
   const codeVerifier = generateRandomString(64);
-  localStorage.setItem(VERIFIER_KEY, codeVerifier);
+  sessionStorage.setItem(VERIFIER_KEY, codeVerifier);
 
   const hashed = await sha256(codeVerifier);
   const codeChallenge = base64urlEncode(hashed);
@@ -50,23 +50,11 @@ export async function startTidalOAuth(): Promise<Window | null> {
     code_challenge: codeChallenge,
   });
 
-  const url = `${TIDAL_AUTH_URL}?${params.toString()}`;
-  const width = 500;
-  const height = 700;
-  const left = window.screenX + (window.innerWidth - width) / 2;
-  const top = window.screenY + (window.innerHeight - height) / 2;
-
-  const popup = window.open(
-    url,
-    'tidal_oauth',
-    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
-  );
-
-  return popup;
+  window.location.href = `${TIDAL_AUTH_URL}?${params.toString()}`;
 }
 
 export async function exchangeTidalCode(code: string): Promise<TidalToken> {
-  const codeVerifier = localStorage.getItem(VERIFIER_KEY);
+  const codeVerifier = sessionStorage.getItem(VERIFIER_KEY);
   if (!codeVerifier) throw new Error('Missing PKCE verifier');
 
   // Use edge function to avoid CORS
@@ -91,7 +79,7 @@ export async function exchangeTidalCode(code: string): Promise<TidalToken> {
   const data = await res.json();
   const token: TidalToken = { ...data, obtained_at: Date.now() };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(token));
-  localStorage.removeItem(VERIFIER_KEY);
+  sessionStorage.removeItem(VERIFIER_KEY);
   return token;
 }
 
@@ -113,7 +101,7 @@ export function getTidalToken(): TidalToken | null {
 
 export function disconnectTidal() {
   localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(VERIFIER_KEY);
+  sessionStorage.removeItem(VERIFIER_KEY);
 }
 
 export function isTidalConnected(): boolean {
