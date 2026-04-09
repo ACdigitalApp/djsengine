@@ -86,6 +86,13 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
 
   return (
     <div className="flex-1 overflow-auto">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".mp3,.wav,.flac,audio/mpeg,audio/wav,audio/flac"
+        className="hidden"
+        onChange={handleFileChange}
+      />
       <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3">
         <div className="w-[72px] shrink-0" />
         {COLUMNS.map(col => (
