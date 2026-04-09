@@ -5,7 +5,7 @@ import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import { Save, Globe, User, Key, Crown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+
 import type { RecommendationWeights } from '@/types/track';
 import { DEFAULT_WEIGHTS } from '@/types/track';
 import type { Language } from '@/lib/i18n';
