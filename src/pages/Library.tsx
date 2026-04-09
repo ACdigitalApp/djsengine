@@ -6,6 +6,7 @@ import { TrackFiltersBar } from '@/components/library/TrackFiltersBar';
 import { RecommendationPanel } from '@/components/library/RecommendationPanel';
 import { AudioPlayer } from '@/components/library/AudioPlayer';
 import type { Track, TrackFilters, SortField, SortDirection } from '@/types/track';
+import { toast } from 'sonner';
 
 export default function LibraryPage() {
   const [sidebarFilter, setSidebarFilter] = useState('all');
@@ -15,8 +16,8 @@ export default function LibraryPage() {
   const [sortField, setSortField] = useState<SortField>('bpm');
   const [sortDir, setSortDir] = useState<SortDirection>('asc');
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
+  const [playingTrack, setPlayingTrack] = useState<Track | null>(null);
 
-  // Build effective filters from sidebar + filters bar
   const effectiveFilters = useMemo(() => {
     const f = { ...filters };
     switch (sidebarFilter) {
@@ -32,7 +33,6 @@ export default function LibraryPage() {
 
   const { data: allTracks = [], isLoading } = useTracks(effectiveFilters, sortField, sortDir);
 
-  // Additional client-side sidebar filtering
   const displayTracks = useMemo(() => {
     let tracks = allTracks;
     switch (sidebarFilter) {
@@ -55,17 +55,40 @@ export default function LibraryPage() {
     }
   };
 
+  const handlePlayTrack = useCallback((track: Track) => {
+    if (playingTrack?.id === track.id) {
+      setPlayingTrack(null);
+    } else {
+      setPlayingTrack(track);
+      setSelectedTrack(track);
+    }
+  }, [playingTrack]);
+
+  const handleAddToPlaylist = useCallback((track: Track) => {
+    toast.info(`Playlist: "${track.title}" — funzionalità in arrivo`);
+  }, []);
+
   const handleNextTrack = useCallback(() => {
-    if (!selectedTrack) return;
-    const idx = displayTracks.findIndex(t => t.id === selectedTrack.id);
-    if (idx < displayTracks.length - 1) setSelectedTrack(displayTracks[idx + 1]);
-  }, [selectedTrack, displayTracks]);
+    const current = playingTrack || selectedTrack;
+    if (!current) return;
+    const idx = displayTracks.findIndex(t => t.id === current.id);
+    if (idx < displayTracks.length - 1) {
+      const next = displayTracks[idx + 1];
+      setSelectedTrack(next);
+      if (playingTrack) setPlayingTrack(next);
+    }
+  }, [playingTrack, selectedTrack, displayTracks]);
 
   const handlePrevTrack = useCallback(() => {
-    if (!selectedTrack) return;
-    const idx = displayTracks.findIndex(t => t.id === selectedTrack.id);
-    if (idx > 0) setSelectedTrack(displayTracks[idx - 1]);
-  }, [selectedTrack, displayTracks]);
+    const current = playingTrack || selectedTrack;
+    if (!current) return;
+    const idx = displayTracks.findIndex(t => t.id === current.id);
+    if (idx > 0) {
+      const prev = displayTracks[idx - 1];
+      setSelectedTrack(prev);
+      if (playingTrack) setPlayingTrack(prev);
+    }
+  }, [playingTrack, selectedTrack, displayTracks]);
 
   return (
     <div className="flex flex-col h-full">
@@ -79,7 +102,10 @@ export default function LibraryPage() {
             <TrackTable
               tracks={displayTracks}
               selectedTrackId={selectedTrack?.id || null}
+              playingTrackId={playingTrack?.id || null}
               onSelectTrack={setSelectedTrack}
+              onPlayTrack={handlePlayTrack}
+              onAddToPlaylist={handleAddToPlaylist}
               sortField={sortField}
               sortDir={sortDir}
               onSort={handleSort}
@@ -88,7 +114,7 @@ export default function LibraryPage() {
         </div>
         <RecommendationPanel selectedTrack={selectedTrack} allTracks={allTracks} />
       </div>
-      <AudioPlayer track={selectedTrack} onNext={handleNextTrack} onPrev={handlePrevTrack} />
+      <AudioPlayer track={playingTrack || selectedTrack} onNext={handleNextTrack} onPrev={handlePrevTrack} />
     </div>
   );
 }
