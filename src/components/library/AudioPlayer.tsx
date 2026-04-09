@@ -30,6 +30,7 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateTrack = useUpdateTrack();
+  const { t } = useI18n();
 
   // Reset when track changes
   useEffect(() => {
