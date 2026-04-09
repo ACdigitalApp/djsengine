@@ -131,12 +131,9 @@ function mapTidalTrack(item: any) {
   const album = track.album?.title || null;
   const duration = track.duration || null;
   const artworkUrl = track.album?.imageCover?.[0]?.url
-    || track.album?.cover
-    ? `https://resources.tidal.com/images/${(track.album?.cover || "").replace(/-/g, "/")}/640x640.jpg`
-    : null;
-  // Tidal preview URL pattern
-  const previewUrl = track.id ? `https://listen.tidal.com/track/${track.id}` : null;
-  const audioPreview = track.audioModes ? null : null; // Preview requires specific API access
+    || (track.album?.cover
+      ? `https://resources.tidal.com/images/${track.album.cover.replace(/-/g, "/")}/640x640.jpg`
+      : null);
 
   return {
     externalId: `tidal-${track.id}`,
@@ -144,10 +141,15 @@ function mapTidalTrack(item: any) {
     artist: artists,
     album,
     duration,
-    artworkUrl: track.album?.imageCover?.[0]?.url || artworkUrl,
+    artworkUrl,
     genre: track.properties?.content?.[0] || null,
+    // Tidal API does not expose BPM or musical key in track metadata
+    bpm: null,
+    key: null,
+    isrc: track.isrc || null,
+    popularity: track.popularity || null,
     source: "tidal",
     tidalId: track.id,
-    tidalUrl: previewUrl,
+    tidalUrl: track.id ? `https://listen.tidal.com/track/${track.id}` : null,
   };
 }
