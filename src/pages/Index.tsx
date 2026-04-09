@@ -57,6 +57,11 @@ export default function IndexPage() {
         </div>
       </section>
 
+      {/* Hero Logo */}
+      <section className="px-6 md:px-12 pb-12 max-w-4xl mx-auto flex justify-center">
+        <img src={djEngineLogo} alt="DJ'S ENGINE" className="w-full max-w-2xl h-auto object-contain" />
+      </section>
+
       {/* 3 Cards */}
       <section id="features" className="px-6 md:px-12 pb-16 max-w-5xl mx-auto">
         <div className="grid md:grid-cols-3 gap-6">
