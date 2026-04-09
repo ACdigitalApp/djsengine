@@ -18,6 +18,7 @@ import AuthPage from "./pages/Auth";
 import UserManagementPage from "./pages/UserManagement";
 import BankDetailsPage from "./pages/BankDetails";
 import TidalCallbackPage from "./pages/TidalCallback";
+import DiscoverPage from "./pages/Discover";
 import ForbiddenPage from "./pages/Forbidden";
 import NotFound from "./pages/NotFound";
 
@@ -43,6 +44,7 @@ const App = () => (
                 {/* Protected routes */}
                 <Route path="/dashboard" element={<AuthGuard><AppLayout><DashboardPage /></AppLayout></AuthGuard>} />
                 <Route path="/library" element={<AuthGuard><AppLayout><LibraryPage /></AppLayout></AuthGuard>} />
+                <Route path="/discover" element={<AuthGuard><AppLayout><DiscoverPage /></AppLayout></AuthGuard>} />
                 <Route path="/track/:id" element={<AuthGuard><AppLayout><TrackDetailPage /></AppLayout></AuthGuard>} />
                 <Route path="/crates" element={<AuthGuard><AppLayout><CratesPage /></AppLayout></AuthGuard>} />
                 <Route path="/sources" element={<AuthGuard><AppLayout><SourcesPage /></AppLayout></AuthGuard>} />
