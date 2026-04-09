@@ -1,18 +1,25 @@
 import { ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Library, FolderOpen, Radio, Settings,
-  ChevronLeft, ChevronRight, Users, CreditCard
+  ChevronLeft, ChevronRight, Users, CreditCard, LogOut
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
+import { supabase } from '@/integrations/supabase/client';
 import vinylLogo from '@/assets/vinyl-logo.avif';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useI18n();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+  };
 
   const NAV_ITEMS = [
     { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
@@ -56,12 +63,24 @@ export function AppLayout({ children }: { children: ReactNode }) {
           })}
         </nav>
 
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center h-10 border-t border-border text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </button>
+        <div className="mt-auto border-t border-border">
+          <button
+            onClick={handleLogout}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2 mx-2 my-1 rounded-md text-sm transition-colors w-[calc(100%-1rem)]",
+              "text-destructive hover:bg-destructive/10"
+            )}
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>{t('settings.logout')}</span>}
+          </button>
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex items-center justify-center h-10 border-t border-border text-muted-foreground hover:text-foreground transition-colors w-full"
+          >
+            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </button>
+        </div>
       </aside>
 
       <main className="flex-1 overflow-auto">
