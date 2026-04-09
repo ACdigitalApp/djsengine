@@ -41,12 +41,6 @@ export default function DiscoverPage() {
       const params = new URLSearchParams({ method, limit: '50' });
       if (genre) params.set('tag', genre);
 
-      const { data, error } = await supabase.functions.invoke('lastfm-proxy', {
-        body: null,
-        headers: { 'Content-Type': 'application/json' },
-      });
-
-      // Use fetch directly for GET with query params
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/lastfm-proxy?${params.toString()}`;
       const resp = await fetch(url, {
         headers: {
