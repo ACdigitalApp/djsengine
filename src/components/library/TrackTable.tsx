@@ -23,6 +23,10 @@ interface TrackTableProps {
 export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort }: TrackTableProps) {
   const updateTrack = useUpdateTrack();
   const { t } = useI18n();
+  const [uploadingTrackId, setUploadingTrackId] = useState<string | null>(null);
+  const [uploadedTrackId, setUploadedTrackId] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadTargetRef = useRef<string | null>(null);
 
   const COLUMNS: { field: SortField; label: string; width: string }[] = [
     { field: 'title', label: t('col.titleArtist'), width: 'min-w-[200px] flex-[2]' },
@@ -42,6 +46,42 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
     e.stopPropagation();
     updateTrack.mutate({ id: track.id, updates: { favorite: !track.favorite } });
     toast.success(track.favorite ? t('action.removedFavorite') : t('action.savedFavorite'));
+  };
+
+  const handleUploadClick = (e: React.MouseEvent, trackId: string) => {
+    e.stopPropagation();
+    uploadTargetRef.current = trackId;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const trackId = uploadTargetRef.current;
+    if (!file || !trackId) return;
+
+    // Reset input so same file can be re-selected
+    e.target.value = '';
+
+    setUploadingTrackId(trackId);
+    const ext = file.name.split('.').pop();
+    const path = `${trackId}.${ext}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('track-audio')
+        .upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage.from('track-audio').getPublicUrl(path);
+      updateTrack.mutate({ id: trackId, updates: { audio_url: publicUrl } });
+      toast.success(t('player.audioUploaded'));
+      setUploadedTrackId(trackId);
+      setTimeout(() => setUploadedTrackId(null), 2000);
+    } catch (err: any) {
+      toast.error((t('player.uploadError') || 'Upload error') + ': ' + err.message);
+    } finally {
+      setUploadingTrackId(null);
+    }
   };
 
   return (
