@@ -113,7 +113,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
             )}
           </button>
         ))}
-        <div className="w-[68px] shrink-0" />
+        <div className="w-[92px] shrink-0" />
       </div>
 
       <div className="divide-y divide-border/50">
