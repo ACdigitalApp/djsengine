@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Library, FolderOpen, Radio, Settings,
-  ChevronLeft, ChevronRight, Users, CreditCard
+  ChevronLeft, ChevronRight, Users, CreditCard, Search
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const NAV_ITEMS = [
     { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
     { path: '/library', label: t('nav.library'), icon: Library },
+    { path: '/discover', label: t('nav.discover'), icon: Search },
     { path: '/crates', label: t('nav.smartCrates'), icon: FolderOpen },
     { path: '/sources', label: t('nav.sources'), icon: Radio },
     { path: '/users', label: t('nav.userManagement'), icon: Users },

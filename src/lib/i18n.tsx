@@ -301,6 +301,29 @@ const translations = {
   'bank.noTransactions': { en: 'No transactions yet', it: 'Nessuna transazione' },
   'bank.noLogs': { en: 'No log entries', it: 'Nessun registro' },
 
+  // Discover
+  'discover.title': { en: 'Discover', it: 'Scopri' },
+  'discover.subtitle': { en: 'Find trending tracks and add them to your library', it: 'Trova brani in tendenza e aggiungili alla tua libreria' },
+  'discover.allGenres': { en: 'All Genres', it: 'Tutti i Generi' },
+  'discover.search': { en: 'Search', it: 'Cerca' },
+  'discover.addToLibrary': { en: 'Add to Library', it: 'Aggiungi alla Libreria' },
+  'discover.exportM3U': { en: 'Export VDJ', it: 'Esporta VDJ' },
+  'discover.importing': { en: 'Importing', it: 'Importazione in corso' },
+  'discover.importDone': { en: 'Import complete', it: 'Importazione completata' },
+  'discover.imported': { en: 'Imported', it: 'Importati' },
+  'discover.skipped': { en: 'Skipped', it: 'Saltati' },
+  'discover.errors': { en: 'Errors', it: 'Errori' },
+  'discover.noResults': { en: 'No tracks found', it: 'Nessun brano trovato' },
+  'discover.error': { en: 'Search error', it: 'Errore di ricerca' },
+  'discover.m3uExported': { en: 'M3U exported!', it: 'M3U esportato!' },
+  'discover.m3uHint': { en: 'Drag the .m3u file into VirtualDJ to import', it: 'Trascina il file .m3u in VirtualDJ per importare' },
+  'discover.colTitle': { en: 'Title', it: 'Titolo' },
+  'discover.colArtist': { en: 'Artist', it: 'Artista' },
+  'discover.colPopularity': { en: 'Popularity', it: 'Popolarità' },
+
+  // Navigation
+  'nav.discover': { en: 'Discover', it: 'Scopri' },
+
   // General
   'general.loading': { en: 'Loading...', it: 'Caricamento...' },
   'general.noTracks': { en: 'No tracks found', it: 'Nessun brano trovato' },
