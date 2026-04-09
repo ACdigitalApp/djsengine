@@ -45,6 +45,19 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
       const { data: { publicUrl } } = supabase.storage.from('track-audio').getPublicUrl(path);
       updateTrack.mutate({ id: track.id, updates: { audio_url: publicUrl } });
       toast.success(t('player.audioUploaded'));
+
+      // Auto-analyze BPM and key
+      setAnalyzing(true);
+      toast.loading('Analisi BPM e tonalità...', { id: 'audio-analysis-player' });
+      try {
+        const result = await analyzeAudioFile(file);
+        updateTrack.mutate({ id: track.id, updates: { bpm: result.bpm, key: result.key } });
+        toast.success(`BPM: ${result.bpm} | Tonalità: ${result.key} rilevati automaticamente`, { id: 'audio-analysis-player' });
+      } catch (analysisErr: any) {
+        toast.error('Errore analisi audio: ' + analysisErr.message, { id: 'audio-analysis-player' });
+      } finally {
+        setAnalyzing(false);
+      }
     } catch (err: any) {
       toast.error(t('player.uploadError') + ': ' + err.message);
     }
