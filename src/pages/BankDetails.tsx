@@ -20,7 +20,7 @@ export default function BankDetailsPage() {
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src={vinylLogo} alt="Logo" className="h-10 w-10 rounded-full animate-spin-slow" />
+          <img src={vinylLogo} alt="DJSENGINE" className="h-10 w-10 rounded-full animate-spin-slow" />
           <div>
             <h1 className="text-2xl font-heading font-bold text-primary">{t('bank.title')}</h1>
             <p className="text-sm text-muted-foreground">{t('bank.subtitle')}</p>
@@ -63,7 +63,7 @@ export default function BankDetailsPage() {
           <div className="grid grid-cols-2 gap-6">
             <div>
               <p className="text-xs text-muted-foreground">{t('bank.holder')}</p>
-              <p className="font-medium text-foreground">DJ SELECTION ENGINE</p>
+              <p className="font-medium text-foreground">DJSENGINE</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">{t('bank.bank')}</p>

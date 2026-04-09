@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n';
 import { useSettings, useUpsertSetting } from '@/hooks/useSettings';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
-import { Save, Globe, User, LogOut, Key } from 'lucide-react';
+import { Save, Globe, User, LogOut, Key, Crown } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import type { RecommendationWeights } from '@/types/track';
 import { DEFAULT_WEIGHTS } from '@/types/track';
-import { useEffect } from 'react';
 import type { Language } from '@/lib/i18n';
 import vinylLogo from '@/assets/vinyl-logo.avif';
 
@@ -26,6 +25,17 @@ export default function SettingsPage() {
   const [crowdImportance, setCrowdImportance] = useState(50);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserEmail(user.email || '');
+        setUserName(user.user_metadata?.display_name || user.email?.split('@')[0] || '');
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (settings) {
@@ -70,19 +80,34 @@ export default function SettingsPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <img src={vinylLogo} alt="Logo" className="h-10 w-10 rounded-full animate-spin-slow" />
-        <div>
-          <h1 className="text-2xl font-heading font-bold text-primary">{t('settings.title')}</h1>
-          <p className="text-sm text-muted-foreground">{t('settings.subtitle')}</p>
-        </div>
+        <img src={vinylLogo} alt="DJSENGINE" className="h-10 w-10 rounded-full animate-spin-slow" />
+        <h1 className="text-2xl font-heading font-bold text-primary">{t('settings.title')}</h1>
       </div>
 
-      {/* Profile Section */}
-      <section className="bg-card rounded-xl border border-border p-6 space-y-4">
+      {/* Profile */}
+      <section className="bg-card rounded-xl border border-border p-6 space-y-5">
         <h2 className="text-lg font-heading font-semibold text-primary flex items-center gap-2">
           <User className="h-5 w-5" /> {t('settings.profile')}
         </h2>
         <p className="text-xs text-muted-foreground">{t('settings.profileDesc')}</p>
+
+        <div className="flex items-center gap-4">
+          <img src={vinylLogo} alt="Avatar" className="h-16 w-16 rounded-full border-2 border-border" />
+          <div>
+            <p className="font-medium text-foreground">{userName}</p>
+            <p className="text-sm text-muted-foreground">{userEmail}</p>
+          </div>
+        </div>
+
+        <div className="border-t border-border pt-4">
+          <label className="block text-sm font-medium text-foreground mb-1">Email</label>
+          <input
+            type="email"
+            value={userEmail}
+            disabled
+            className="w-full px-3 py-2.5 rounded-lg bg-secondary border border-border text-muted-foreground text-sm"
+          />
+        </div>
 
         <div className="flex items-center justify-between border-t border-border pt-4">
           <div>
@@ -126,6 +151,24 @@ export default function SettingsPage() {
         </div>
       </section>
 
+      {/* Subscription */}
+      <section className="bg-card rounded-xl border border-border p-6 space-y-4">
+        <h2 className="text-lg font-heading font-semibold text-primary flex items-center gap-2">
+          <Crown className="h-5 w-5" /> {t('settings.subscription')}
+        </h2>
+        <p className="text-xs text-muted-foreground">{t('settings.subscriptionDesc')}</p>
+        <div className="bg-secondary rounded-lg p-4 flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-warning/20 flex items-center justify-center">
+            <Crown className="h-5 w-5 text-warning" />
+          </div>
+          <div className="flex-1">
+            <p className="font-medium text-foreground">DJ Pro</p>
+            <p className="text-xs text-muted-foreground">{t('settings.fullAccess')}</p>
+          </div>
+          <span className="px-3 py-1 rounded-md text-xs font-medium bg-primary/15 text-primary">Pro</span>
+        </div>
+      </section>
+
       {/* Language */}
       <section className="bg-card rounded-xl border border-border p-6 space-y-4">
         <h2 className="text-lg font-heading font-semibold text-primary flex items-center gap-2">
@@ -149,7 +192,6 @@ export default function SettingsPage() {
       <section className="bg-card rounded-xl border border-border p-6 space-y-4">
         <h2 className="text-lg font-heading font-semibold text-primary">{t('settings.mixWeights')}</h2>
         <p className="text-xs text-muted-foreground">{t('settings.weightsDesc')} <span className={total === 100 ? 'text-success font-medium' : 'text-warning font-medium'}>{total}%</span></p>
-
         <div className="space-y-4">
           <WeightSlider label={t('settings.bpmCompat')} value={weights.bpm} onChange={v => setWeights(w => ({ ...w, bpm: v }))} />
           <WeightSlider label={t('settings.keyCompat')} value={weights.key} onChange={v => setWeights(w => ({ ...w, key: v }))} />
