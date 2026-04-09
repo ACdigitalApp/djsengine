@@ -31,6 +31,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
   const { t } = useI18n();
   const [uploadingTrackId, setUploadingTrackId] = useState<string | null>(null);
   const [uploadedTrackId, setUploadedTrackId] = useState<string | null>(null);
+  const [analyzingTrackId, setAnalyzingTrackId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadTargetRef = useRef<string | null>(null);
