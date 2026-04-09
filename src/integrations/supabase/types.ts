@@ -14,7 +14,381 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      crate_tracks: {
+        Row: {
+          added_at: string
+          crate_id: string
+          id: string
+          track_id: string
+        }
+        Insert: {
+          added_at?: string
+          crate_id: string
+          id?: string
+          track_id: string
+        }
+        Update: {
+          added_at?: string
+          crate_id?: string
+          id?: string
+          track_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crate_tracks_crate_id_fkey"
+            columns: ["crate_id"]
+            isOneToOne: false
+            referencedRelation: "crates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crate_tracks_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crates: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_smart: boolean | null
+          name: string
+          rules: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_smart?: boolean | null
+          name: string
+          rules?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_smart?: boolean | null
+          name?: string
+          rules?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      playlist_tracks: {
+        Row: {
+          added_at: string
+          id: string
+          playlist_id: string
+          position: number
+          track_id: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          playlist_id: string
+          position?: number
+          track_id: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          playlist_id?: string
+          position?: number
+          track_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playlist_tracks_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "playlists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playlist_tracks_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      playlists: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      recommendations: {
+        Row: {
+          compatibility_score: number | null
+          created_at: string
+          id: string
+          reasons: Json | null
+          recommended_track_id: string
+          source_track_id: string
+          status: string | null
+        }
+        Insert: {
+          compatibility_score?: number | null
+          created_at?: string
+          id?: string
+          reasons?: Json | null
+          recommended_track_id: string
+          source_track_id: string
+          status?: string | null
+        }
+        Update: {
+          compatibility_score?: number | null
+          created_at?: string
+          id?: string
+          reasons?: Json | null
+          recommended_track_id?: string
+          source_track_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recommendations_recommended_track_id_fkey"
+            columns: ["recommended_track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recommendations_source_track_id_fkey"
+            columns: ["source_track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      settings: {
+        Row: {
+          created_at: string
+          id: string
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      sources: {
+        Row: {
+          config: Json | null
+          created_at: string
+          enabled: boolean | null
+          id: string
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          name: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tracks: {
+        Row: {
+          affinity_score: number | null
+          album: string | null
+          approved: boolean | null
+          artist: string
+          artwork_url: string | null
+          bpm: number | null
+          created_at: string
+          crowd_score: number | null
+          duration: number | null
+          energy: number | null
+          favorite: boolean | null
+          freshness_score: number | null
+          genre: string | null
+          id: string
+          key: string | null
+          last_played_at: string | null
+          loudness: number | null
+          mood: string | null
+          notes: string | null
+          personal_fit_score: number | null
+          personal_rating: number | null
+          play_count: number | null
+          rejected: boolean | null
+          remix: string | null
+          riempipista: boolean | null
+          source: string | null
+          source_track_id: string | null
+          status: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          affinity_score?: number | null
+          album?: string | null
+          approved?: boolean | null
+          artist: string
+          artwork_url?: string | null
+          bpm?: number | null
+          created_at?: string
+          crowd_score?: number | null
+          duration?: number | null
+          energy?: number | null
+          favorite?: boolean | null
+          freshness_score?: number | null
+          genre?: string | null
+          id?: string
+          key?: string | null
+          last_played_at?: string | null
+          loudness?: number | null
+          mood?: string | null
+          notes?: string | null
+          personal_fit_score?: number | null
+          personal_rating?: number | null
+          play_count?: number | null
+          rejected?: boolean | null
+          remix?: string | null
+          riempipista?: boolean | null
+          source?: string | null
+          source_track_id?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          affinity_score?: number | null
+          album?: string | null
+          approved?: boolean | null
+          artist?: string
+          artwork_url?: string | null
+          bpm?: number | null
+          created_at?: string
+          crowd_score?: number | null
+          duration?: number | null
+          energy?: number | null
+          favorite?: boolean | null
+          freshness_score?: number | null
+          genre?: string | null
+          id?: string
+          key?: string | null
+          last_played_at?: string | null
+          loudness?: number | null
+          mood?: string | null
+          notes?: string | null
+          personal_fit_score?: number | null
+          personal_rating?: number | null
+          play_count?: number | null
+          rejected?: boolean | null
+          remix?: string | null
+          riempipista?: boolean | null
+          source?: string | null
+          source_track_id?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_feedback: {
+        Row: {
+          created_at: string
+          feedback_type: string
+          id: string
+          notes: string | null
+          related_track_id: string | null
+          track_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_type: string
+          id?: string
+          notes?: string | null
+          related_track_id?: string | null
+          track_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback_type?: string
+          id?: string
+          notes?: string | null
+          related_track_id?: string | null
+          track_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_feedback_related_track_id_fkey"
+            columns: ["related_track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_feedback_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
