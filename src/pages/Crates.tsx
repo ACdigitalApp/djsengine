@@ -17,7 +17,7 @@ export default function CratesPage() {
     { name: t('crates.newHeat'), description: t('crates.newHeatDesc'), icon: Sparkles, filter: (t: any[]) => t.filter((x: any) => (x.freshness_score || 0) >= 7) },
     { name: t('crates.safeMix'), description: t('crates.safeMixDesc'), icon: Shield, filter: (t: any[]) => t.filter((x: any) => (x.crowd_score || 0) >= 8 && x.approved) },
     { name: t('crates.energyUp'), description: t('crates.energyUpDesc'), icon: Zap, filter: (t: any[]) => t.filter((x: any) => (x.energy || 5) >= 7 && (x.crowd_score || 0) >= 7) },
-    { name: t('crates.riempipista'), description: t('crates.warmUpDesc'), icon: Star, filter: (t: any[]) => t.filter((x: any) => x.riempipista) },
+    { name: t('crates.riempipista'), description: t('crates.riempipistaDesc'), icon: Star, filter: (t: any[]) => t.filter((x: any) => x.riempipista) },
     { name: t('crates.similarFav'), description: t('crates.similarFavDesc'), icon: Heart, filter: (t: any[]) => t.filter((x: any) => (x.personal_fit_score || 0) >= 8) },
     { name: t('crates.highCompat'), description: t('crates.highCompatDesc'), icon: Package, filter: (t: any[]) => t.filter((x: any) => (x.affinity_score || 0) >= 7 && (x.crowd_score || 0) >= 7) },
     { name: t('crates.gems'), description: t('crates.gemsDesc'), icon: Gem, filter: (t: any[]) => t.filter((x: any) => (x.play_count || 0) <= 2 && (x.affinity_score || 0) >= 6 && x.approved) },
