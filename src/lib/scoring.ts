@@ -1,6 +1,5 @@
-import type { Track, RecommendationWeights, DEFAULT_WEIGHTS } from '@/types/track';
+import type { Track, RecommendationWeights } from '@/types/track';
 
-// Camelot wheel key compatibility
 const CAMELOT_WHEEL: Record<string, number[]> = {
   '1A': [1], '1B': [1], '2A': [2], '2B': [2], '3A': [3], '3B': [3],
   '4A': [4], '4B': [4], '5A': [5], '5B': [5], '6A': [6], '6B': [6],
@@ -19,12 +18,8 @@ export function keyCompatibility(key1: string | null, key2: string | null): numb
   const k1 = getKeyNumber(key1);
   const k2 = getKeyNumber(key2);
   if (!k1 || !k2) return 50;
-  
-  // Same key = 100
   if (k1.num === k2.num && k1.mode === k2.mode) return 100;
-  // Same number different mode = 80 (relative major/minor)
   if (k1.num === k2.num) return 80;
-  // Adjacent on Camelot wheel = 85
   const diff = Math.abs(k1.num - k2.num);
   const circularDiff = Math.min(diff, 12 - diff);
   if (circularDiff === 1 && k1.mode === k2.mode) return 85;
@@ -39,7 +34,6 @@ export function bpmCompatibility(bpm1: number | null, bpm2: number | null, toler
   if (diff <= 1) return 100;
   if (diff <= tolerance / 2) return 90;
   if (diff <= tolerance) return 70;
-  // Check half/double time
   const halfDouble = Math.min(Math.abs(bpm1 - bpm2 * 2), Math.abs(bpm1 * 2 - bpm2));
   if (halfDouble <= tolerance) return 65;
   if (diff <= tolerance * 2) return 40;
@@ -56,11 +50,57 @@ export function energyMatch(e1: number | null, e2: number | null): number {
   return 20;
 }
 
+type ReasonLabels = {
+  compatibleBpm: (bpm: number | null) => string;
+  harmonicKey: (key: string | null) => string;
+  similarEnergy: string;
+  strongCrowd: string;
+  highAffinity: string;
+  matchesStyle: string;
+  freshAlternative: string;
+  excellentTransition: string;
+  goodCompat: string;
+  exploratoryPick: string;
+};
+
+const REASON_LABELS_EN: ReasonLabels = {
+  compatibleBpm: (bpm) => `Compatible BPM (${bpm})`,
+  harmonicKey: (key) => `Harmonic key match (${key})`,
+  similarEnergy: 'Similar energy level',
+  strongCrowd: 'Strong crowd potential',
+  highAffinity: 'High sound affinity',
+  matchesStyle: 'Matches your style',
+  freshAlternative: 'Fresh alternative',
+  excellentTransition: 'Excellent transition potential',
+  goodCompat: 'Good overall compatibility',
+  exploratoryPick: 'Exploratory pick',
+};
+
+const REASON_LABELS_IT: ReasonLabels = {
+  compatibleBpm: (bpm) => `BPM compatibile (${bpm})`,
+  harmonicKey: (key) => `Tonalità armonica (${key})`,
+  similarEnergy: 'Livello energia simile',
+  strongCrowd: 'Alto potenziale crowd',
+  highAffinity: 'Alta affinità sonora',
+  matchesStyle: 'Adatto al tuo stile',
+  freshAlternative: 'Alternativa fresca',
+  excellentTransition: 'Ottimo potenziale transizione',
+  goodCompat: 'Buona compatibilità generale',
+  exploratoryPick: 'Scelta esplorativa',
+};
+
+export const REASON_LABELS: Record<string, ReasonLabels> = {
+  en: REASON_LABELS_EN,
+  it: REASON_LABELS_IT,
+};
+
 export function calculateCompatibility(
   source: Track,
   candidate: Track,
-  weights: RecommendationWeights = { bpm: 25, key: 20, energy: 15, affinity: 20, crowd: 10, personalFit: 10 }
+  weights: RecommendationWeights = { bpm: 25, key: 20, energy: 15, affinity: 20, crowd: 10, personalFit: 10 },
+  lang: string = 'en'
 ): { score: number; reasons: string[] } {
+  const labels = REASON_LABELS[lang] || REASON_LABELS_EN;
   const reasons: string[] = [];
   
   const bpmScore = bpmCompatibility(source.bpm, candidate.bpm);
@@ -76,18 +116,18 @@ export function calculateCompatibility(
      affinityScore * weights.affinity + crowdScoreVal * weights.crowd + fitScore * weights.personalFit) / totalWeight
   );
   
-  if (bpmScore >= 85) reasons.push(`Compatible BPM (${candidate.bpm})`);
-  if (keyScore >= 80) reasons.push(`Harmonic key match (${candidate.key})`);
-  if (energyScore >= 80) reasons.push('Similar energy level');
-  if (crowdScoreVal >= 70) reasons.push('Strong crowd potential');
-  if (affinityScore >= 70) reasons.push('High sound affinity');
-  if (fitScore >= 70) reasons.push('Matches your style');
-  if ((candidate.freshness_score || 0) >= 7) reasons.push('Fresh alternative');
-  if (bpmScore >= 90 && keyScore >= 80) reasons.push('Excellent transition potential');
+  if (bpmScore >= 85) reasons.push(labels.compatibleBpm(candidate.bpm));
+  if (keyScore >= 80) reasons.push(labels.harmonicKey(candidate.key));
+  if (energyScore >= 80) reasons.push(labels.similarEnergy);
+  if (crowdScoreVal >= 70) reasons.push(labels.strongCrowd);
+  if (affinityScore >= 70) reasons.push(labels.highAffinity);
+  if (fitScore >= 70) reasons.push(labels.matchesStyle);
+  if ((candidate.freshness_score || 0) >= 7) reasons.push(labels.freshAlternative);
+  if (bpmScore >= 90 && keyScore >= 80) reasons.push(labels.excellentTransition);
   
   if (reasons.length === 0) {
-    if (score >= 60) reasons.push('Good overall compatibility');
-    else reasons.push('Exploratory pick');
+    if (score >= 60) reasons.push(labels.goodCompat);
+    else reasons.push(labels.exploratoryPick);
   }
   
   return { score: Math.min(100, Math.max(0, score)), reasons };
@@ -96,7 +136,6 @@ export function calculateCompatibility(
 export function getTrackUseCase(track: Track): string {
   const energy = track.energy || 5;
   const bpm = track.bpm || 120;
-  
   if (energy <= 3 || bpm < 115) return 'Warm Up';
   if (energy <= 5) return 'Mid Set';
   if (energy >= 8 || bpm >= 130) return 'Peak Time';
