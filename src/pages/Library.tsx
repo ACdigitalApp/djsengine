@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTracks } from '@/hooks/useTracks';
 import { LibrarySidebar } from '@/components/library/LibrarySidebar';
 import { TrackTable } from '@/components/library/TrackTable';
 import { TrackFiltersBar } from '@/components/library/TrackFiltersBar';
 import { RecommendationPanel } from '@/components/library/RecommendationPanel';
+import { AudioPlayer } from '@/components/library/AudioPlayer';
 import type { Track, TrackFilters, SortField, SortDirection } from '@/types/track';
 
 export default function LibraryPage() {
@@ -54,25 +55,40 @@ export default function LibraryPage() {
     }
   };
 
+  const handleNextTrack = useCallback(() => {
+    if (!selectedTrack) return;
+    const idx = displayTracks.findIndex(t => t.id === selectedTrack.id);
+    if (idx < displayTracks.length - 1) setSelectedTrack(displayTracks[idx + 1]);
+  }, [selectedTrack, displayTracks]);
+
+  const handlePrevTrack = useCallback(() => {
+    if (!selectedTrack) return;
+    const idx = displayTracks.findIndex(t => t.id === selectedTrack.id);
+    if (idx > 0) setSelectedTrack(displayTracks[idx - 1]);
+  }, [selectedTrack, displayTracks]);
+
   return (
-    <div className="flex h-full">
-      <LibrarySidebar activeFilter={sidebarFilter} onFilterChange={setSidebarFilter} />
-      <div className="flex-1 flex flex-col min-w-0">
-        <TrackFiltersBar filters={filters} onChange={setFilters} />
-        {isLoading ? (
-          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">Loading tracks...</div>
-        ) : (
-          <TrackTable
-            tracks={displayTracks}
-            selectedTrackId={selectedTrack?.id || null}
-            onSelectTrack={setSelectedTrack}
-            sortField={sortField}
-            sortDir={sortDir}
-            onSort={handleSort}
-          />
-        )}
+    <div className="flex flex-col h-full">
+      <div className="flex flex-1 min-h-0">
+        <LibrarySidebar activeFilter={sidebarFilter} onFilterChange={setSidebarFilter} />
+        <div className="flex-1 flex flex-col min-w-0">
+          <TrackFiltersBar filters={filters} onChange={setFilters} />
+          {isLoading ? (
+            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">Loading tracks...</div>
+          ) : (
+            <TrackTable
+              tracks={displayTracks}
+              selectedTrackId={selectedTrack?.id || null}
+              onSelectTrack={setSelectedTrack}
+              sortField={sortField}
+              sortDir={sortDir}
+              onSort={handleSort}
+            />
+          )}
+        </div>
+        <RecommendationPanel selectedTrack={selectedTrack} allTracks={allTracks} />
       </div>
-      <RecommendationPanel selectedTrack={selectedTrack} allTracks={allTracks} />
+      <AudioPlayer track={selectedTrack} onNext={handleNextTrack} onPrev={handlePrevTrack} />
     </div>
   );
 }
