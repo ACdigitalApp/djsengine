@@ -79,12 +79,22 @@ export default function IndexPage() {
 
             {/* Disco grande SOLO qui nella hero */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative">
+              <div className="relative max-w-[560px] w-full aspect-square">
                 <div className="absolute inset-0 rounded-full bg-[#2D6A4F]/10 blur-3xl" />
+                {/* Spinning disc – arm area masked out */}
                 <img
                   src={bigDiscImg}
-                  alt="Disco grande DJ'S ENGINE"
-                  className="relative z-10 h-auto w-full max-w-[560px] object-contain motion-safe:animate-[spin_24s_linear_infinite]"
+                  alt="Disco vinile rotante"
+                  className="absolute inset-0 z-10 h-full w-full object-contain motion-safe:animate-[spin_24s_linear_infinite]"
+                  style={{ clipPath: 'circle(45% at 45% 50%)' }}
+                />
+                {/* Static tonearm layer */}
+                <img
+                  src={bigDiscImg}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute inset-0 z-20 h-full w-full object-contain pointer-events-none"
+                  style={{ clipPath: 'polygon(75% 0%, 100% 0%, 100% 70%, 75% 70%)' }}
                 />
               </div>
             </div>
