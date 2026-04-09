@@ -1,34 +1,71 @@
 import type { SourceAdapter, ExternalTrack } from './types';
 import type { Track } from '@/types/track';
+import { isTidalConnected, searchTidalTracks, getTidalTrending } from '@/lib/tidal';
 
-// Placeholder adapter — not connected to real TIDAL API
 export class TidalAdapter implements SourceAdapter {
   name = 'TIDAL';
   type = 'tidal';
-  enabled = false;
+
+  get enabled() {
+    return isTidalConnected();
+  }
 
   async fetchTrendingTracks(): Promise<ExternalTrack[]> {
-    return [
-      { externalId: 'tidal-1', title: 'Cola (TIDAL Demo)', artist: 'CamelPhat & Elderbrook', genre: 'Tech House', bpm: 124, key: '5A', energy: 7, source: 'tidal' },
-      { externalId: 'tidal-2', title: 'Opus (TIDAL Demo)', artist: 'Eric Prydz', genre: 'Progressive House', bpm: 126, key: '2B', energy: 8, source: 'tidal' },
-    ];
+    if (!this.enabled) return [];
+    try {
+      const tracks = await getTidalTrending();
+      return tracks.map(this.mapRawToExternal);
+    } catch {
+      return [];
+    }
   }
 
   async fetchNewReleases(): Promise<ExternalTrack[]> {
-    return [
-      { externalId: 'tidal-3', title: 'New Release Demo', artist: 'Demo Artist', genre: 'House', bpm: 122, key: '8A', energy: 6, source: 'tidal' },
-    ];
+    if (!this.enabled) return [];
+    try {
+      const tracks = await getTidalTrending();
+      return tracks.slice(0, 10).map(this.mapRawToExternal);
+    } catch {
+      return [];
+    }
   }
 
   async searchTracks(query: string): Promise<ExternalTrack[]> {
-    return this.fetchTrendingTracks().then(t => t.filter(x => x.title.toLowerCase().includes(query.toLowerCase())));
+    if (!this.enabled) return [];
+    try {
+      const tracks = await searchTidalTracks(query);
+      return tracks.map(this.mapRawToExternal);
+    } catch {
+      return [];
+    }
+  }
+
+  private mapRawToExternal(raw: any): ExternalTrack {
+    return {
+      externalId: raw.externalId || `tidal-${raw.tidalId}`,
+      title: raw.title,
+      artist: raw.artist,
+      album: raw.album,
+      genre: raw.genre,
+      duration: raw.duration,
+      artworkUrl: raw.artworkUrl,
+      source: 'tidal',
+    };
   }
 
   mapExternalTrackToInternalModel(ext: ExternalTrack): Partial<Track> {
     return {
-      title: ext.title, artist: ext.artist, genre: ext.genre || null,
-      bpm: ext.bpm || null, key: ext.key || null, energy: ext.energy || null,
-      source: 'tidal', source_track_id: ext.externalId,
+      title: ext.title,
+      artist: ext.artist,
+      genre: ext.genre || null,
+      album: ext.album || null,
+      duration: ext.duration || null,
+      bpm: ext.bpm || null,
+      key: ext.key || null,
+      energy: ext.energy || null,
+      artwork_url: ext.artworkUrl || null,
+      source: 'tidal',
+      source_track_id: ext.externalId,
     };
   }
 }
