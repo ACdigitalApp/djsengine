@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { adapters } from '@/lib/adapters';
 import { Radio, AlertCircle, Link, Unlink, Search, Loader2, Plus } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
-import { startTidalOAuth, exchangeTidalCode, isTidalConnected, disconnectTidal, searchTidalTracks } from '@/lib/tidal';
+import { startTidalOAuth, isTidalConnected, disconnectTidal, searchTidalTracks } from '@/lib/tidal';
 import { supabase } from '@/integrations/supabase/client';
 import { useUpdateTrack } from '@/hooks/useTracks';
 import { useQueryClient } from '@tanstack/react-query';
@@ -26,34 +26,31 @@ export default function SourcesPage() {
   const sourceList = Object.values(adapters);
 
   const [tidalConnected, setTidalConnected] = useState(isTidalConnected());
-  const [exchanging, setExchanging] = useState(false);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<TidalSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [importing, setImporting] = useState<string | null>(null);
 
-  // Handle OAuth callback
+  // Listen for OAuth popup postMessage
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    if (code && !tidalConnected) {
-      setExchanging(true);
-      exchangeTidalCode(code)
-        .then(() => {
-          setTidalConnected(true);
-          toast.success(t('sources.tidalConnected'));
-          // Clean URL
-          window.history.replaceState({}, '', window.location.pathname);
-        })
-        .catch((err) => {
-          toast.error(`${t('sources.tidalError')}: ${err.message}`);
-        })
-        .finally(() => setExchanging(false));
-    }
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+
+      if (event.data?.type === 'tidal_oauth_success') {
+        setTidalConnected(true);
+        toast.success(t('sources.tidalConnected'));
+      } else if (event.data?.type === 'tidal_oauth_error') {
+        toast.error(`${t('sources.tidalError')}: ${event.data.error}`);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  const handleConnectTidal = () => {
-    startTidalOAuth();
+  const handleConnectTidal = async () => {
+    await startTidalOAuth();
   };
 
   const handleDisconnectTidal = () => {
@@ -132,12 +129,7 @@ export default function SourcesPage() {
                   {/* Tidal OAuth buttons */}
                   {isTidal && (
                     <div className="mt-3">
-                      {exchanging ? (
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          {t('sources.connecting')}
-                        </div>
-                      ) : tidalConnected ? (
+                      {tidalConnected ? (
                         <Button variant="outline" size="sm" onClick={handleDisconnectTidal} className="text-xs gap-1.5">
                           <Unlink className="h-3.5 w-3.5" />
                           {t('sources.disconnectTidal')}

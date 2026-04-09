@@ -17,6 +17,7 @@ import SettingsPage from "./pages/Settings";
 import AuthPage from "./pages/Auth";
 import UserManagementPage from "./pages/UserManagement";
 import BankDetailsPage from "./pages/BankDetails";
+import TidalCallbackPage from "./pages/TidalCallback";
 import ForbiddenPage from "./pages/Forbidden";
 import NotFound from "./pages/NotFound";
 
@@ -36,6 +37,7 @@ const App = () => (
                 {/* Public routes */}
                 <Route path="/" element={<IndexPage />} />
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/tidal-callback" element={<TidalCallbackPage />} />
                 <Route path="/forbidden" element={<ForbiddenPage />} />
 
                 {/* Protected routes */}

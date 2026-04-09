@@ -2,7 +2,7 @@
 const TIDAL_CLIENT_ID = 'BZWWaUvVpiE8gRvy';
 const TIDAL_AUTH_URL = 'https://login.tidal.com/oauth2/authorize';
 const TIDAL_TOKEN_URL = 'https://login.tidal.com/oauth2/token';
-const REDIRECT_URI = `${window.location.origin}/sources`;
+const REDIRECT_URI = `${window.location.origin}/tidal-callback`;
 const STORAGE_KEY = 'tidal_token';
 const VERIFIER_KEY = 'tidal_pkce_verifier';
 
@@ -34,7 +34,7 @@ function base64urlEncode(buffer: ArrayBuffer): string {
 }
 
 // --- Public API ---
-export async function startTidalOAuth() {
+export async function startTidalOAuth(): Promise<Window | null> {
   const codeVerifier = generateRandomString(64);
   localStorage.setItem(VERIFIER_KEY, codeVerifier);
 
@@ -50,7 +50,19 @@ export async function startTidalOAuth() {
     code_challenge: codeChallenge,
   });
 
-  window.location.href = `${TIDAL_AUTH_URL}?${params.toString()}`;
+  const url = `${TIDAL_AUTH_URL}?${params.toString()}`;
+  const width = 500;
+  const height = 700;
+  const left = window.screenX + (window.innerWidth - width) / 2;
+  const top = window.screenY + (window.innerHeight - height) / 2;
+
+  const popup = window.open(
+    url,
+    'tidal_oauth',
+    `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
+  );
+
+  return popup;
 }
 
 export async function exchangeTidalCode(code: string): Promise<TidalToken> {
