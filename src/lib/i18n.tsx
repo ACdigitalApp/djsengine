@@ -9,6 +9,21 @@ const translations = {
   'nav.smartCrates': { en: 'Smart Crates', it: 'Crate Intelligenti' },
   'nav.sources': { en: 'Sources', it: 'Sorgenti' },
   'nav.settings': { en: 'Settings', it: 'Impostazioni' },
+  'nav.userManagement': { en: 'User Management', it: 'Gestione Utenti' },
+  'nav.bankDetails': { en: 'Bank Details', it: 'Dati Bancari' },
+
+  // Auth
+  'auth.welcomeBack': { en: 'Welcome Back!', it: 'Bentornato!' },
+  'auth.createAccount': { en: 'Create Account', it: 'Crea Account' },
+  'auth.loginSubtitle': { en: 'Sign in to manage your music', it: 'Accedi per gestire la tua musica' },
+  'auth.signupSubtitle': { en: 'Register to get started', it: 'Registrati per iniziare' },
+  'auth.login': { en: 'Sign In', it: 'Accedi' },
+  'auth.signup': { en: 'Register', it: 'Registrati' },
+  'auth.forgotPassword': { en: 'Forgot password?', it: 'Non ricordi la password?' },
+  'auth.noAccount': { en: "Don't have an account?", it: 'Non hai un account?' },
+  'auth.hasAccount': { en: 'Already have an account?', it: 'Hai già un account?' },
+  'auth.loginSuccess': { en: 'Logged in!', it: 'Accesso effettuato!' },
+  'auth.signupSuccess': { en: 'Check your email to confirm', it: 'Controlla la tua email per confermare' },
 
   // Library sidebar
   'sidebar.library': { en: 'Library', it: 'Libreria' },
@@ -126,6 +141,13 @@ const translations = {
   'settings.saved': { en: 'Settings saved', it: 'Impostazioni salvate' },
   'settings.language': { en: 'Language', it: 'Lingua' },
   'settings.languageDesc': { en: 'Choose the app language', it: 'Scegli la lingua dell\'app' },
+  'settings.profile': { en: 'Profile', it: 'Profilo' },
+  'settings.profileDesc': { en: 'Your account information', it: 'Informazioni del tuo account' },
+  'settings.changePassword': { en: 'Change Password', it: 'Cambia Password' },
+  'settings.changePasswordDesc': { en: 'Update your account password', it: 'Modifica la password del tuo account' },
+  'settings.passwordChanged': { en: 'Password updated', it: 'Password aggiornata' },
+  'settings.logout': { en: 'Sign Out', it: 'Esci' },
+  'settings.logoutDesc': { en: 'Disconnect your account', it: 'Disconnetti il tuo account' },
 
   // Crates
   'crates.title': { en: 'Smart Crates', it: 'Crate Intelligenti' },
@@ -177,6 +199,39 @@ const translations = {
   'useCase.midSet': { en: 'Mid Set', it: 'Mid Set' },
   'useCase.peakTime': { en: 'Peak Time', it: 'Peak Time' },
   'useCase.closing': { en: 'Closing', it: 'Chiusura' },
+
+  // Admin / User Management
+  'admin.title': { en: 'User Management', it: 'Gestione Utenti' },
+  'admin.subtitle': { en: 'Manage users, plans and revenue', it: 'Amministra utenti, piani e incassi' },
+  'admin.refresh': { en: 'Refresh', it: 'Aggiorna' },
+  'admin.newUser': { en: 'New User', it: 'Nuovo Utente' },
+  'admin.totalRevenue': { en: 'Total Revenue', it: 'Incasso Totale' },
+  'admin.totalBalance': { en: 'Total Balance', it: 'Saldo Totale' },
+  'admin.payingUsers': { en: 'Paying Users', it: 'Utenti Paganti' },
+  'admin.last30Days': { en: 'Last 30 Days', it: 'Ultimi 30gg' },
+  'admin.activeTrial': { en: 'Active Trial', it: 'Trial Attive' },
+  'admin.expired': { en: 'Expired', it: 'Scaduti' },
+  'admin.searchPlaceholder': { en: 'Search name or email...', it: 'Cerca nome o email...' },
+  'admin.registeredUsers': { en: 'Registered Users', it: 'Utenti Registrati' },
+  'admin.colName': { en: 'Name', it: 'Nome' },
+  'admin.colRole': { en: 'Role', it: 'Ruolo' },
+  'admin.colRegDate': { en: 'Reg. Date', it: 'Data Reg.' },
+  'admin.colLastAccess': { en: 'Last Access', it: 'Ultimo Accesso' },
+
+  // Bank Details
+  'bank.title': { en: 'My Bank Details', it: 'I Miei Dati Bancari' },
+  'bank.subtitle': { en: 'Manage bank coordinates and transactions', it: 'Gestione coordinate bancarie e transazioni' },
+  'bank.adminArea': { en: 'Admin Area', it: 'Area Protetta Admin' },
+  'bank.coordinates': { en: 'Coordinates', it: 'Coordinate' },
+  'bank.transactions': { en: 'Transactions', it: 'Transazioni' },
+  'bank.bankCoordinates': { en: 'Bank Coordinates', it: 'Coordinate Bancarie' },
+  'bank.bankCoordinatesDesc': { en: 'Your coordinates for receiving payments', it: 'Le tue coordinate per ricevere pagamenti' },
+  'bank.edit': { en: 'Edit', it: 'Modifica' },
+  'bank.holder': { en: 'Holder', it: 'Intestatario' },
+  'bank.bank': { en: 'Bank', it: 'Banca' },
+  'bank.bankAddress': { en: 'Bank Address', it: 'Indirizzo Banca' },
+  'bank.noTransactions': { en: 'No transactions yet', it: 'Nessuna transazione' },
+  'bank.noLogs': { en: 'No log entries', it: 'Nessun registro' },
 
   // General
   'general.loading': { en: 'Loading tracks...', it: 'Caricamento brani...' },
