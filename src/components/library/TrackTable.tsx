@@ -176,7 +176,26 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
               </div>
               <div className="w-24 shrink-0"><StatusBadge status={track.status} /></div>
 
-              <div className="w-[68px] shrink-0 flex items-center gap-1 justify-end">
+              <div className="w-[92px] shrink-0 flex items-center gap-0.5 justify-end">
+                <button
+                  onClick={(e) => handleUploadClick(e, track.id)}
+                  disabled={uploadingTrackId === track.id}
+                  className={cn(
+                    "p-1.5 rounded hover:bg-secondary transition-colors",
+                    uploadingTrackId === track.id ? "text-primary animate-pulse" :
+                    uploadedTrackId === track.id ? "text-green-500" :
+                    track.audio_url ? "text-primary/60" : "text-muted-foreground hover:text-foreground"
+                  )}
+                  title={uploadingTrackId === track.id ? 'Uploading...' : 'Upload audio'}
+                >
+                  {uploadingTrackId === track.id ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : uploadedTrackId === track.id ? (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  ) : (
+                    <Paperclip className="h-3.5 w-3.5" />
+                  )}
+                </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onAddToPlaylist(track); }}
                   className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
