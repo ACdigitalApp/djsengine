@@ -6,8 +6,10 @@ import { EnergyBar, ScoreBadge, CompatibilityBadge, StatusBadge } from '@/compon
 import { CheckCircle2, XCircle, Heart, Star, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useMemo } from 'react';
+import { useI18n } from '@/lib/i18n';
 
 export default function TrackDetailPage() {
+  const { t } = useI18n();
   const { id } = useParams<{ id: string }>();
   const { data: track, isLoading } = useTrack(id);
   const { data: allTracks = [] } = useTracks();
@@ -37,17 +39,16 @@ export default function TrackDetailPage() {
     toast.success(`Track ${action}d`);
   };
 
-  if (isLoading) return <div className="p-6 text-muted-foreground">Loading...</div>;
-  if (!track) return <div className="p-6 text-muted-foreground">Track not found</div>;
+  if (isLoading) return <div className="p-6 text-muted-foreground">{t('general.loading')}</div>;
+  if (!track) return <div className="p-6 text-muted-foreground">{t('general.trackNotFound')}</div>;
 
   return (
     <div className="p-6 max-w-5xl space-y-6">
       <Link to="/library" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
-        <ArrowLeft className="h-3.5 w-3.5" /> Back to Library
+        <ArrowLeft className="h-3.5 w-3.5" /> {t('detail.backToLibrary')}
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Main info */}
         <div className="md:col-span-2 space-y-4">
           <div>
             <h1 className="text-2xl font-heading font-bold text-foreground">{track.title}</h1>
@@ -55,33 +56,31 @@ export default function TrackDetailPage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <InfoBlock label="BPM" value={String(track.bpm || '-')} mono />
-            <InfoBlock label="Key" value={track.key || '-'} mono />
-            <InfoBlock label="Genre" value={track.genre || '-'} />
-            <InfoBlock label="Duration" value={track.duration ? `${Math.floor(track.duration/60)}:${(track.duration%60).toString().padStart(2,'0')}` : '-'} mono />
+            <InfoBlock label={t('col.bpm')} value={String(track.bpm || '-')} mono />
+            <InfoBlock label={t('col.key')} value={track.key || '-'} mono />
+            <InfoBlock label={t('col.genre')} value={track.genre || '-'} />
+            <InfoBlock label={t('detail.duration')} value={track.duration ? `${Math.floor(track.duration/60)}:${(track.duration%60).toString().padStart(2,'0')}` : '-'} mono />
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground">Energy</span>
+            <span className="text-xs text-muted-foreground">{t('col.energy')}</span>
             <EnergyBar energy={track.energy} />
             <StatusBadge status={track.status} />
             {useCase && <span className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">{useCase}</span>}
           </div>
 
-          {/* Scores */}
           <div className="grid grid-cols-4 gap-3">
-            <ScoreCard label="Affinity" value={track.affinity_score || 0} color="text-primary" />
-            <ScoreCard label="Crowd" value={track.crowd_score || 0} color="text-crowd" />
-            <ScoreCard label="Freshness" value={track.freshness_score || 0} color="text-freshness" />
-            <ScoreCard label="Personal Fit" value={track.personal_fit_score || 0} color="text-fit" />
+            <ScoreCard label={t('col.affinity')} value={track.affinity_score || 0} color="text-primary" />
+            <ScoreCard label={t('col.crowd')} value={track.crowd_score || 0} color="text-crowd" />
+            <ScoreCard label={t('col.fresh')} value={track.freshness_score || 0} color="text-freshness" />
+            <ScoreCard label={t('col.fit')} value={track.personal_fit_score || 0} color="text-fit" />
           </div>
 
-          {/* Actions */}
           <div className="flex gap-2">
-            <ActionButton onClick={() => handleAction('approve')} icon={CheckCircle2} label="Approve" color="bg-success/15 text-success hover:bg-success/25" />
-            <ActionButton onClick={() => handleAction('reject')} icon={XCircle} label="Reject" color="bg-destructive/15 text-destructive hover:bg-destructive/25" />
-            <ActionButton onClick={() => handleAction('favorite')} icon={Heart} label="Favorite" color="bg-warning/15 text-warning hover:bg-warning/25" />
-            <ActionButton onClick={() => handleAction('riempipista')} icon={Star} label="Riempipista" color="bg-crowd/15 text-crowd hover:bg-crowd/25" />
+            <ActionButton onClick={() => handleAction('approve')} icon={CheckCircle2} label={t('action.approve')} color="bg-success/15 text-success hover:bg-success/25" />
+            <ActionButton onClick={() => handleAction('reject')} icon={XCircle} label={t('action.reject')} color="bg-destructive/15 text-destructive hover:bg-destructive/25" />
+            <ActionButton onClick={() => handleAction('favorite')} icon={Heart} label={t('action.favorite')} color="bg-warning/15 text-warning hover:bg-warning/25" />
+            <ActionButton onClick={() => handleAction('riempipista')} icon={Star} label={t('action.riempipista')} color="bg-crowd/15 text-crowd hover:bg-crowd/25" />
           </div>
 
           {track.tags && track.tags.length > 0 && (
@@ -93,9 +92,8 @@ export default function TrackDetailPage() {
           )}
         </div>
 
-        {/* Similar Tracks */}
         <div className="space-y-3">
-          <h3 className="text-sm font-heading font-semibold text-foreground">Recommended Next</h3>
+          <h3 className="text-sm font-heading font-semibold text-foreground">{t('detail.recommendedNext')}</h3>
           <div className="space-y-2">
             {similar.map(rec => (
               <Link key={rec.track.id} to={`/track/${rec.track.id}`} className="block p-2.5 rounded-lg bg-card border border-border hover:border-primary/30 transition-colors">

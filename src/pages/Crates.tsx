@@ -3,36 +3,31 @@ import { useTracks } from '@/hooks/useTracks';
 import { EnergyBar } from '@/components/ui/score-badge';
 import { Link } from 'react-router-dom';
 import { Sun, Flame, Zap, Moon, Sparkles, Shield, TrendingUp, Star, Heart, Gem, Package } from 'lucide-react';
-
-interface SmartCrateConfig {
-  name: string;
-  description: string;
-  icon: any;
-  filter: (tracks: any[]) => any[];
-}
-
-const SMART_CRATES: SmartCrateConfig[] = [
-  { name: 'Warm Up', description: 'Low energy, smooth openers', icon: Sun, filter: t => t.filter((x: any) => (x.energy || 5) <= 4 || (x.bpm || 120) < 118) },
-  { name: 'Prime Time', description: 'Building momentum', icon: TrendingUp, filter: t => t.filter((x: any) => (x.energy || 5) >= 5 && (x.energy || 5) <= 7 && (x.bpm || 120) >= 120 && (x.bpm || 120) <= 128) },
-  { name: 'Peak Time', description: 'Maximum energy bangers', icon: Flame, filter: t => t.filter((x: any) => (x.energy || 5) >= 8) },
-  { name: 'Closing', description: 'Wind down tracks', icon: Moon, filter: t => t.filter((x: any) => (x.energy || 5) <= 3) },
-  { name: 'New Heat', description: 'Fresh high-scoring tracks', icon: Sparkles, filter: t => t.filter((x: any) => (x.freshness_score || 0) >= 7) },
-  { name: 'Safe Mix', description: 'Proven crowd pleasers', icon: Shield, filter: t => t.filter((x: any) => (x.crowd_score || 0) >= 8 && x.approved) },
-  { name: 'Energy Up', description: 'Tracks to raise energy', icon: Zap, filter: t => t.filter((x: any) => (x.energy || 5) >= 7 && (x.crowd_score || 0) >= 7) },
-  { name: 'Riempipista', description: 'Guaranteed floor fillers', icon: Star, filter: t => t.filter((x: any) => x.riempipista) },
-  { name: 'Similar to Favorites', description: 'Matches your top picks', icon: Heart, filter: t => t.filter((x: any) => (x.personal_fit_score || 0) >= 8) },
-  { name: 'High Compatibility', description: 'Best mixing candidates', icon: Package, filter: t => t.filter((x: any) => (x.affinity_score || 0) >= 7 && (x.crowd_score || 0) >= 7) },
-  { name: 'Underused Gems', description: 'Great tracks, rarely played', icon: Gem, filter: t => t.filter((x: any) => (x.play_count || 0) <= 2 && (x.affinity_score || 0) >= 6 && x.approved) },
-];
+import { useI18n } from '@/lib/i18n';
 
 export default function CratesPage() {
+  const { t } = useI18n();
   const { data: tracks = [] } = useTracks();
+
+  const SMART_CRATES = [
+    { name: t('crates.warmUp'), description: t('crates.warmUpDesc'), icon: Sun, filter: (t: any[]) => t.filter((x: any) => (x.energy || 5) <= 4 || (x.bpm || 120) < 118) },
+    { name: t('crates.primeTime'), description: t('crates.primeTimeDesc'), icon: TrendingUp, filter: (t: any[]) => t.filter((x: any) => (x.energy || 5) >= 5 && (x.energy || 5) <= 7 && (x.bpm || 120) >= 120 && (x.bpm || 120) <= 128) },
+    { name: t('crates.peakTime'), description: t('crates.peakTimeDesc'), icon: Flame, filter: (t: any[]) => t.filter((x: any) => (x.energy || 5) >= 8) },
+    { name: t('crates.closing'), description: t('crates.closingDesc'), icon: Moon, filter: (t: any[]) => t.filter((x: any) => (x.energy || 5) <= 3) },
+    { name: t('crates.newHeat'), description: t('crates.newHeatDesc'), icon: Sparkles, filter: (t: any[]) => t.filter((x: any) => (x.freshness_score || 0) >= 7) },
+    { name: t('crates.safeMix'), description: t('crates.safeMixDesc'), icon: Shield, filter: (t: any[]) => t.filter((x: any) => (x.crowd_score || 0) >= 8 && x.approved) },
+    { name: t('crates.energyUp'), description: t('crates.energyUpDesc'), icon: Zap, filter: (t: any[]) => t.filter((x: any) => (x.energy || 5) >= 7 && (x.crowd_score || 0) >= 7) },
+    { name: t('crates.riempipista'), description: t('crates.warmUpDesc'), icon: Star, filter: (t: any[]) => t.filter((x: any) => x.riempipista) },
+    { name: t('crates.similarFav'), description: t('crates.similarFavDesc'), icon: Heart, filter: (t: any[]) => t.filter((x: any) => (x.personal_fit_score || 0) >= 8) },
+    { name: t('crates.highCompat'), description: t('crates.highCompatDesc'), icon: Package, filter: (t: any[]) => t.filter((x: any) => (x.affinity_score || 0) >= 7 && (x.crowd_score || 0) >= 7) },
+    { name: t('crates.gems'), description: t('crates.gemsDesc'), icon: Gem, filter: (t: any[]) => t.filter((x: any) => (x.play_count || 0) <= 2 && (x.affinity_score || 0) >= 6 && x.approved) },
+  ];
 
   return (
     <div className="p-6 max-w-6xl space-y-6">
       <div>
-        <h1 className="text-2xl font-heading font-bold text-foreground">Smart Crates</h1>
-        <p className="text-sm text-muted-foreground">Auto-organized collections based on scoring rules</p>
+        <h1 className="text-2xl font-heading font-bold text-foreground">{t('crates.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('crates.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -61,9 +56,9 @@ export default function CratesPage() {
                   </Link>
                 ))}
                 {crateTracks.length > 4 && (
-                  <p className="text-[10px] text-muted-foreground px-2">+{crateTracks.length - 4} more tracks</p>
+                  <p className="text-[10px] text-muted-foreground px-2">+{crateTracks.length - 4} {t('crates.moreTracks')}</p>
                 )}
-                {crateTracks.length === 0 && <p className="text-[10px] text-muted-foreground px-2">No matching tracks</p>}
+                {crateTracks.length === 0 && <p className="text-[10px] text-muted-foreground px-2">{t('crates.noTracks')}</p>}
               </div>
             </div>
           );

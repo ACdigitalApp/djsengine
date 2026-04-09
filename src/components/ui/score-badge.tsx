@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useI18n } from '@/lib/i18n';
 
 interface ScoreBadgeProps {
   value: number;
@@ -35,13 +36,19 @@ export function CompatibilityBadge({ score }: { score: number }) {
 }
 
 export function StatusBadge({ status }: { status: string | null }) {
+  const { t } = useI18n();
   const config: Record<string, string> = {
     approved: 'bg-success/15 text-success border-success/30',
     rejected: 'bg-destructive/15 text-destructive border-destructive/30',
     to_review: 'bg-warning/15 text-warning border-warning/30',
   };
   const cls = config[status || 'to_review'] || config.to_review;
-  const label = status === 'to_review' ? 'To Review' : status === 'approved' ? 'Approved' : 'Rejected';
+  const labelMap: Record<string, string> = {
+    approved: t('status.approved'),
+    rejected: t('status.rejected'),
+    to_review: t('status.toReview'),
+  };
+  const label = labelMap[status || 'to_review'] || labelMap.to_review;
   
   return (
     <span className={cn("inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border uppercase tracking-wider", cls)}>

@@ -6,22 +6,23 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-
-const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/library', label: 'Library', icon: Library },
-  { path: '/crates', label: 'Smart Crates', icon: FolderOpen },
-  { path: '/sources', label: 'Sources', icon: Radio },
-  { path: '/settings', label: 'Settings', icon: Settings },
-];
+import { useI18n } from '@/lib/i18n';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const { t } = useI18n();
+
+  const NAV_ITEMS = [
+    { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
+    { path: '/library', label: t('nav.library'), icon: Library },
+    { path: '/crates', label: t('nav.smartCrates'), icon: FolderOpen },
+    { path: '/sources', label: t('nav.sources'), icon: Radio },
+    { path: '/settings', label: t('nav.settings'), icon: Settings },
+  ];
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      {/* Global Nav */}
       <aside className={cn(
         "flex flex-col border-r border-border bg-card transition-all duration-200",
         collapsed ? "w-16" : "w-52"
@@ -60,7 +61,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </button>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 overflow-auto">
         {children}
       </main>
