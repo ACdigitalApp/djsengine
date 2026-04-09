@@ -32,10 +32,12 @@ export default function SettingsPage() {
   const [resetting, setResetting] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (user) {
         setUserEmail(user.email || '');
         setUserName(user.user_metadata?.display_name || user.email?.split('@')[0] || '');
+        const { data } = await supabase.from('user_roles').select('role').eq('user_id', user.id).eq('role', 'admin').maybeSingle();
+        setIsAdmin(!!data);
       }
     });
   }, []);
