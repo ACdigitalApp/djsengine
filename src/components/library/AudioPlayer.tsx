@@ -30,7 +30,8 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
   const handleUploadAudio = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !track) return;
     const file = e.target.files[0];
-    const ext = file.name.split('.').pop();
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ext = sanitizedName.split('.').pop();
     const path = `${track.id}.${ext}`;
 
     try {
@@ -50,7 +51,8 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
   const handleUploadArtwork = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !track) return;
     const file = e.target.files[0];
-    const ext = file.name.split('.').pop();
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const ext = sanitizedName.split('.').pop();
     const path = `${track.id}.${ext}`;
 
     try {
