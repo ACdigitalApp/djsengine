@@ -101,8 +101,8 @@ export default function IndexPage() {
               <Download className="h-4 w-4" /> {t('home.startFree')}
             </Link>
           </div>
-          <div className="flex-shrink-0 w-full max-w-[420px]">
-            <img src={djEngineLogo} alt="DJ'S ENGINE" className="w-full h-auto object-contain" />
+          <div className="flex-shrink-0 w-64 h-64 md:w-80 md:h-80">
+            <img src={vinylLogo} alt="DJ'S ENGINE Vinyl" className="w-full h-full rounded-full animate-spin-slow object-cover" />
           </div>
         </div>
       </section>
