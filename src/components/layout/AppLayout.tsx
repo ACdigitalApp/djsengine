@@ -1,12 +1,13 @@
 import { ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Library, FolderOpen, Radio, Settings,
-  ChevronLeft, ChevronRight, Users, CreditCard
+  ChevronLeft, ChevronRight, Users, CreditCard, LogOut
 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/lib/i18n';
+import { supabase } from '@/integrations/supabase/client';
 import vinylLogo from '@/assets/vinyl-logo.avif';
 
 export function AppLayout({ children }: { children: ReactNode }) {
