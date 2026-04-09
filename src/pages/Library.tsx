@@ -9,6 +9,7 @@ import { useI18n } from '@/lib/i18n';
 import type { Track, TrackFilters, SortField, SortDirection } from '@/types/track';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { fetchExistingTrackKeys, normalizeKey } from '@/lib/dedup';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -129,6 +130,12 @@ export default function LibraryPage() {
 
   const confirmNewTrack = async () => {
     if (!newTitle.trim() || !newArtist.trim()) return;
+    // Dedup check
+    const existing = await fetchExistingTrackKeys();
+    if (existing.has(normalizeKey(newTitle, newArtist))) {
+      toast.warning('Brano già presente in libreria (stesso titolo + artista)');
+      return;
+    }
     const { error } = await supabase.from('tracks').insert({ title: newTitle.trim(), artist: newArtist.trim(), source: 'local', status: 'to_review' });
     if (error) {
       toast.error(error.message);
