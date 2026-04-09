@@ -45,7 +45,7 @@ export async function startTidalOAuth() {
     response_type: 'code',
     client_id: TIDAL_CLIENT_ID,
     redirect_uri: REDIRECT_URI,
-    scope: 'r_usr w_usr',
+    scope: 'collection.read playlists.read playback user.read recommendations.read entitlements.read search.read',
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,
   });
