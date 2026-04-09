@@ -75,6 +75,15 @@ export default function SettingsPage() {
     setShowPasswordForm(false);
   };
 
+  const handleResetLibrary = async () => {
+    if (resetStep < 2) { setResetStep(s => s + 1); return; }
+    setResetting(true);
+    const { error } = await supabase.from('tracks').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    setResetting(false);
+    setResetStep(0);
+    if (error) { toast.error(error.message); return; }
+    toast.success('Libreria resettata con successo');
+  };
 
   const total = weights.bpm + weights.key + weights.energy + weights.affinity + weights.crowd + weights.personalFit;
 
