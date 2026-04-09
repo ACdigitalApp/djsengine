@@ -137,18 +137,6 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t border-border pt-4">
-          <div>
-            <p className="font-medium text-foreground">{t('settings.logout')}</p>
-            <p className="text-xs text-muted-foreground">{t('settings.logoutDesc')}</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-          >
-            <LogOut className="h-4 w-4" /> {t('settings.logout')}
-          </button>
-        </div>
       </section>
 
       {/* Subscription */}

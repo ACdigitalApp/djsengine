@@ -8,58 +8,44 @@ export default function IndexPage() {
   const { t } = useI18n();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="flex items-center justify-between px-6 md:px-12 py-4 border-b border-border bg-card">
-        <div className="flex items-center gap-3">
-          <img src={vinylLogo} alt="DJSENGINE" className="h-9 w-9 rounded-full animate-spin-slow" />
-          <span className="font-heading font-bold text-foreground text-lg tracking-tight">DJ'S ENGINE</span>
-        </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-          <a href="#features" className="hover:text-foreground transition-colors">{t('home.features')}</a>
-          <a href="#benefits" className="hover:text-foreground transition-colors">{t('home.benefits')}</a>
-          <Link to="/auth" className="hover:text-foreground transition-colors">{t('home.signIn')}</Link>
-          <Link
-            to="/auth"
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-          >
-            {t('home.startFree')}
-          </Link>
-        </nav>
-        <Link to="/auth" className="md:hidden px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
-          {t('home.startFree')}
-        </Link>
-      </header>
-
+    <div className="flex-1 overflow-auto bg-background">
       {/* Hero */}
-      <section className="px-6 md:px-12 py-16 md:py-24 text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-6xl font-heading font-bold text-foreground leading-tight">
-          {t('home.heroTitle1')}{' '}
-          <span className="text-primary">{t('home.heroTitleHighlight')}</span>{' '}
-          {t('home.heroTitle2')}
-        </h1>
-        <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-          {t('home.heroSubtitle')}
-        </p>
-        <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-          <Link
-            to="/auth"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
-          >
-            {t('home.startFree')} <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/auth"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border text-foreground font-medium hover:bg-secondary transition-colors"
-          >
-            <Download className="h-4 w-4" /> {t('home.signIn')}
-          </Link>
+      <section className="px-6 md:px-12 py-16 md:py-20 max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center gap-10">
+          <div className="flex-1 text-center md:text-left">
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground leading-tight">
+              {t('home.heroTitle1')}{' '}
+              <span className="text-primary">{t('home.heroTitleHighlight')}</span>{' '}
+              {t('home.heroTitle2')}
+            </h1>
+            <p className="mt-5 text-lg text-muted-foreground max-w-xl">
+              {t('home.heroSubtitle')}
+            </p>
+            <div className="mt-8 flex items-center gap-4 flex-wrap justify-center md:justify-start">
+              <Link
+                to="/auth"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+              >
+                {t('home.startFree')} <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                to="/auth"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border text-foreground font-medium hover:bg-secondary transition-colors"
+              >
+                <Download className="h-4 w-4" /> {t('home.signIn')}
+              </Link>
+            </div>
+          </div>
+          {/* Big vinyl disc in the hero */}
+          <div className="shrink-0 w-56 h-56 md:w-72 md:h-72">
+            <img src={vinylLogo} alt="DJ'S ENGINE Vinyl" className="w-full h-full rounded-full animate-spin-slow object-cover" />
+          </div>
         </div>
       </section>
 
-      {/* Hero Logo */}
-      <section className="px-6 md:px-12 pb-12 max-w-4xl mx-auto flex justify-center">
-        <img src={djEngineLogo} alt="DJ'S ENGINE" className="w-full max-w-2xl h-auto object-contain" />
+      {/* DJ Engine Logo */}
+      <section className="px-6 md:px-12 pb-10 max-w-3xl mx-auto flex justify-center">
+        <img src={djEngineLogo} alt="DJ'S ENGINE" className="w-full max-w-md h-auto object-contain" />
       </section>
 
       {/* 3 Cards */}
