@@ -5,10 +5,12 @@ import { TrackTable } from '@/components/library/TrackTable';
 import { TrackFiltersBar } from '@/components/library/TrackFiltersBar';
 import { RecommendationPanel } from '@/components/library/RecommendationPanel';
 import { AudioPlayer } from '@/components/library/AudioPlayer';
+import { useI18n } from '@/lib/i18n';
 import type { Track, TrackFilters, SortField, SortDirection } from '@/types/track';
 import { toast } from 'sonner';
 
 export default function LibraryPage() {
+  const { t } = useI18n();
   const [sidebarFilter, setSidebarFilter] = useState('all');
   const [filters, setFilters] = useState<TrackFilters>({
     search: '', bpmMin: null, bpmMax: null, key: null, genre: null, energy: null, source: null, status: null,
@@ -65,8 +67,8 @@ export default function LibraryPage() {
   }, [playingTrack]);
 
   const handleAddToPlaylist = useCallback((track: Track) => {
-    toast.info(`Playlist: "${track.title}" — funzionalità in arrivo`);
-  }, []);
+    toast.info(`${t('action.playlistComingSoon')}: "${track.title}"`);
+  }, [t]);
 
   const handleNextTrack = useCallback(() => {
     const current = playingTrack || selectedTrack;
@@ -97,7 +99,7 @@ export default function LibraryPage() {
         <div className="flex-1 flex flex-col min-w-0">
           <TrackFiltersBar filters={filters} onChange={setFilters} />
           {isLoading ? (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">Loading tracks...</div>
+            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">{t('general.loading')}</div>
           ) : (
             <TrackTable
               tracks={displayTracks}

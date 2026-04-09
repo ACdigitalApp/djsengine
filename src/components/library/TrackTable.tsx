@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { StatusBadge, EnergyBar, ScoreBadge } from '@/components/ui/score-badge';
 import { ArrowUpDown, ArrowUp, ArrowDown, Play, Pause, ListPlus, Star } from 'lucide-react';
 import { useUpdateTrack } from '@/hooks/useTracks';
+import { useI18n } from '@/lib/i18n';
 import { toast } from 'sonner';
 
 interface TrackTableProps {
@@ -17,34 +18,33 @@ interface TrackTableProps {
   onSort: (field: SortField) => void;
 }
 
-const COLUMNS: { field: SortField; label: string; width: string }[] = [
-  { field: 'title', label: 'Title / Artist', width: 'min-w-[200px] flex-[2]' },
-  { field: 'bpm', label: 'BPM', width: 'w-16' },
-  { field: 'key', label: 'Key', width: 'w-14' },
-  { field: 'energy', label: 'Energy', width: 'w-20' },
-  { field: 'genre', label: 'Genre', width: 'w-28' },
-  { field: 'affinity_score', label: 'Affinity', width: 'w-16' },
-  { field: 'crowd_score', label: 'Crowd', width: 'w-16' },
-  { field: 'freshness_score', label: 'Fresh', width: 'w-16' },
-  { field: 'personal_fit_score', label: 'Fit', width: 'w-14' },
-  { field: 'source', label: 'Source', width: 'w-16' },
-  { field: 'status', label: 'Status', width: 'w-24' },
-];
-
 export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTrack, onPlayTrack, onAddToPlaylist, sortField, sortDir, onSort }: TrackTableProps) {
   const updateTrack = useUpdateTrack();
+  const { t } = useI18n();
+
+  const COLUMNS: { field: SortField; label: string; width: string }[] = [
+    { field: 'title', label: t('col.titleArtist'), width: 'min-w-[200px] flex-[2]' },
+    { field: 'bpm', label: t('col.bpm'), width: 'w-16' },
+    { field: 'key', label: t('col.key'), width: 'w-14' },
+    { field: 'energy', label: t('col.energy'), width: 'w-20' },
+    { field: 'genre', label: t('col.genre'), width: 'w-28' },
+    { field: 'affinity_score', label: t('col.affinity'), width: 'w-16' },
+    { field: 'crowd_score', label: t('col.crowd'), width: 'w-16' },
+    { field: 'freshness_score', label: t('col.fresh'), width: 'w-16' },
+    { field: 'personal_fit_score', label: t('col.fit'), width: 'w-14' },
+    { field: 'source', label: t('col.source'), width: 'w-16' },
+    { field: 'status', label: t('col.status'), width: 'w-24' },
+  ];
 
   const handleSave = (e: React.MouseEvent, track: Track) => {
     e.stopPropagation();
     updateTrack.mutate({ id: track.id, updates: { favorite: !track.favorite } });
-    toast.success(track.favorite ? 'Rimosso dai preferiti' : 'Salvato nei preferiti');
+    toast.success(track.favorite ? t('action.removedFavorite') : t('action.savedFavorite'));
   };
 
   return (
     <div className="flex-1 overflow-auto">
-      {/* Header */}
       <div className="sticky top-0 z-10 flex items-center gap-0 bg-card border-b border-border px-3">
-        {/* Spacer for play + artwork */}
         <div className="w-[72px] shrink-0" />
         {COLUMNS.map(col => (
           <button
@@ -64,11 +64,9 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
             )}
           </button>
         ))}
-        {/* Spacer for action buttons */}
         <div className="w-[68px] shrink-0" />
       </div>
 
-      {/* Rows */}
       <div className="divide-y divide-border/50">
         {tracks.map(track => {
           const isSelected = track.id === selectedTrackId;
@@ -84,19 +82,17 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
                 isHighCandidate && !isSelected && "bg-primary/[0.03]"
               )}
             >
-              {/* Play button */}
               <button
                 onClick={(e) => { e.stopPropagation(); onPlayTrack(track); }}
                 className={cn(
                   "w-8 h-8 shrink-0 rounded-full flex items-center justify-center mr-1 transition-colors",
                   isPlaying ? "bg-primary text-primary-foreground" : "hover:bg-secondary text-muted-foreground hover:text-foreground"
                 )}
-                title={track.audio_url ? "Play" : "Nessun audio"}
+                title={track.audio_url ? "Play" : t('player.noAudio')}
               >
                 {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
               </button>
 
-              {/* Artwork */}
               <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-secondary mr-2">
                 {track.artwork_url ? (
                   <img src={track.artwork_url} alt="" className="w-full h-full object-cover" />
@@ -105,7 +101,6 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
                 )}
               </div>
 
-              {/* Title / Artist */}
               <div className={cn("min-w-[200px] flex-[2] pr-2")}>
                 <div className="text-sm font-medium text-foreground truncate">{track.title}</div>
                 <div className="text-[11px] text-muted-foreground truncate">
@@ -113,62 +108,30 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
                 </div>
               </div>
 
-              {/* BPM */}
               <div className="w-16 shrink-0">
                 <span className="font-mono text-sm font-semibold text-foreground">{track.bpm || '-'}</span>
               </div>
-
-              {/* Key */}
               <div className="w-14 shrink-0">
                 <span className="font-mono text-xs text-muted-foreground">{track.key || '-'}</span>
               </div>
-
-              {/* Energy */}
-              <div className="w-20 shrink-0">
-                <EnergyBar energy={track.energy} />
-              </div>
-
-              {/* Genre */}
+              <div className="w-20 shrink-0"><EnergyBar energy={track.energy} /></div>
               <div className="w-28 shrink-0">
                 <span className="text-[11px] text-muted-foreground truncate block">{track.genre || '-'}</span>
               </div>
-
-              {/* Affinity */}
-              <div className="w-16 shrink-0">
-                <ScoreBadge value={track.affinity_score || 0} />
-              </div>
-
-              {/* Crowd */}
-              <div className="w-16 shrink-0">
-                <ScoreBadge value={track.crowd_score || 0} colorClass="text-crowd" />
-              </div>
-
-              {/* Freshness */}
-              <div className="w-16 shrink-0">
-                <ScoreBadge value={track.freshness_score || 0} colorClass="text-freshness" />
-              </div>
-
-              {/* Personal Fit */}
-              <div className="w-14 shrink-0">
-                <ScoreBadge value={track.personal_fit_score || 0} colorClass="text-fit" />
-              </div>
-
-              {/* Source */}
+              <div className="w-16 shrink-0"><ScoreBadge value={track.affinity_score || 0} /></div>
+              <div className="w-16 shrink-0"><ScoreBadge value={track.crowd_score || 0} colorClass="text-crowd" /></div>
+              <div className="w-16 shrink-0"><ScoreBadge value={track.freshness_score || 0} colorClass="text-freshness" /></div>
+              <div className="w-14 shrink-0"><ScoreBadge value={track.personal_fit_score || 0} colorClass="text-fit" /></div>
               <div className="w-16 shrink-0">
                 <span className="text-[10px] text-muted-foreground capitalize">{track.source || '-'}</span>
               </div>
+              <div className="w-24 shrink-0"><StatusBadge status={track.status} /></div>
 
-              {/* Status */}
-              <div className="w-24 shrink-0">
-                <StatusBadge status={track.status} />
-              </div>
-
-              {/* Action buttons */}
               <div className="w-[68px] shrink-0 flex items-center gap-1 justify-end">
                 <button
                   onClick={(e) => { e.stopPropagation(); onAddToPlaylist(track); }}
                   className="p-1.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
-                  title="Aggiungi a playlist"
+                  title={t('action.addToPlaylist')}
                 >
                   <ListPlus className="h-3.5 w-3.5" />
                 </button>
@@ -178,7 +141,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
                     "p-1.5 rounded hover:bg-secondary transition-colors",
                     track.favorite ? "text-warning" : "text-muted-foreground hover:text-foreground"
                   )}
-                  title={track.favorite ? "Rimuovi dai preferiti" : "Salva"}
+                  title={track.favorite ? t('action.removeFavorite') : t('action.save')}
                 >
                   <Star className={cn("h-3.5 w-3.5", track.favorite && "fill-current")} />
                 </button>
@@ -187,7 +150,7 @@ export function TrackTable({ tracks, selectedTrackId, playingTrackId, onSelectTr
           );
         })}
         {tracks.length === 0 && (
-          <div className="py-20 text-center text-muted-foreground text-sm">No tracks found</div>
+          <div className="py-20 text-center text-muted-foreground text-sm">{t('general.noTracks')}</div>
         )}
       </div>
     </div>

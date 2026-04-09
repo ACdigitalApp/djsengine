@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useSettings, useUpsertSetting } from '@/hooks/useSettings';
 import { Slider } from '@/components/ui/slider';
-import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Save } from 'lucide-react';
+import { Save, Globe } from 'lucide-react';
 import type { RecommendationWeights } from '@/types/track';
 import { DEFAULT_WEIGHTS } from '@/types/track';
+import { useI18n, type Language } from '@/lib/i18n';
 
 export default function SettingsPage() {
+  const { t, lang, setLang } = useI18n();
   const { data: settings } = useSettings();
   const upsertSetting = useUpsertSetting();
 
@@ -36,7 +37,7 @@ export default function SettingsPage() {
     await upsertSetting.mutateAsync({ key: 'energy_preference', value: energyPreference });
     await upsertSetting.mutateAsync({ key: 'freshness_importance', value: freshnessImportance });
     await upsertSetting.mutateAsync({ key: 'crowd_importance', value: crowdImportance });
-    toast.success('Settings saved');
+    toast.success(t('settings.saved'));
   };
 
   const total = weights.bpm + weights.key + weights.energy + weights.affinity + weights.crowd + weights.personalFit;
@@ -44,41 +45,63 @@ export default function SettingsPage() {
   return (
     <div className="p-6 max-w-3xl space-y-8">
       <div>
-        <h1 className="text-2xl font-heading font-bold text-foreground">Settings</h1>
-        <p className="text-sm text-muted-foreground">Configure recommendation engine parameters</p>
+        <h1 className="text-2xl font-heading font-bold text-foreground">{t('settings.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('settings.subtitle')}</p>
       </div>
+
+      {/* Language */}
+      <section className="space-y-4">
+        <h2 className="text-base font-heading font-semibold text-foreground flex items-center gap-2">
+          <Globe className="h-4 w-4" /> {t('settings.language')}
+        </h2>
+        <p className="text-xs text-muted-foreground">{t('settings.languageDesc')}</p>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setLang('en')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${lang === 'en' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:text-foreground'}`}
+          >
+            🇬🇧 English
+          </button>
+          <button
+            onClick={() => setLang('it')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${lang === 'it' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground hover:text-foreground'}`}
+          >
+            🇮🇹 Italiano
+          </button>
+        </div>
+      </section>
 
       {/* Recommendation Weights */}
       <section className="space-y-4">
-        <h2 className="text-base font-heading font-semibold text-foreground">Mix Compatibility Weights</h2>
-        <p className="text-xs text-muted-foreground">Adjust how much each factor influences the compatibility score. Total: <span className={total === 100 ? 'text-success' : 'text-warning'}>{total}%</span></p>
+        <h2 className="text-base font-heading font-semibold text-foreground">{t('settings.mixWeights')}</h2>
+        <p className="text-xs text-muted-foreground">{t('settings.weightsDesc')} <span className={total === 100 ? 'text-success' : 'text-warning'}>{total}%</span></p>
 
         <div className="space-y-4">
-          <WeightSlider label="BPM Compatibility" value={weights.bpm} onChange={v => setWeights(w => ({ ...w, bpm: v }))} />
-          <WeightSlider label="Key Compatibility" value={weights.key} onChange={v => setWeights(w => ({ ...w, key: v }))} />
-          <WeightSlider label="Energy Match" value={weights.energy} onChange={v => setWeights(w => ({ ...w, energy: v }))} />
-          <WeightSlider label="Sound Affinity" value={weights.affinity} onChange={v => setWeights(w => ({ ...w, affinity: v }))} />
-          <WeightSlider label="Crowd Score" value={weights.crowd} onChange={v => setWeights(w => ({ ...w, crowd: v }))} />
-          <WeightSlider label="Personal Fit" value={weights.personalFit} onChange={v => setWeights(w => ({ ...w, personalFit: v }))} />
+          <WeightSlider label={t('settings.bpmCompat')} value={weights.bpm} onChange={v => setWeights(w => ({ ...w, bpm: v }))} />
+          <WeightSlider label={t('settings.keyCompat')} value={weights.key} onChange={v => setWeights(w => ({ ...w, key: v }))} />
+          <WeightSlider label={t('settings.energyMatch')} value={weights.energy} onChange={v => setWeights(w => ({ ...w, energy: v }))} />
+          <WeightSlider label={t('settings.soundAffinity')} value={weights.affinity} onChange={v => setWeights(w => ({ ...w, affinity: v }))} />
+          <WeightSlider label={t('settings.crowdScore')} value={weights.crowd} onChange={v => setWeights(w => ({ ...w, crowd: v }))} />
+          <WeightSlider label={t('settings.personalFit')} value={weights.personalFit} onChange={v => setWeights(w => ({ ...w, personalFit: v }))} />
         </div>
       </section>
 
       {/* Other Settings */}
       <section className="space-y-4">
-        <h2 className="text-base font-heading font-semibold text-foreground">Preferences</h2>
+        <h2 className="text-base font-heading font-semibold text-foreground">{t('settings.preferences')}</h2>
         
-        <SettingSlider label="BPM Tolerance Range" value={bpmTolerance} min={1} max={20} onChange={setBpmTolerance} unit=" BPM" />
-        <SettingSlider label="Key Compatibility Strictness" value={keyStrictness} min={0} max={100} onChange={setKeyStrictness} unit="%" />
-        <SettingSlider label="Energy Preference (low→high)" value={energyPreference} min={0} max={100} onChange={setEnergyPreference} unit="%" />
-        <SettingSlider label="Freshness Importance" value={freshnessImportance} min={0} max={100} onChange={setFreshnessImportance} unit="%" />
-        <SettingSlider label="Crowd Score Importance" value={crowdImportance} min={0} max={100} onChange={setCrowdImportance} unit="%" />
+        <SettingSlider label={t('settings.bpmTolerance')} value={bpmTolerance} min={1} max={20} onChange={setBpmTolerance} unit=" BPM" />
+        <SettingSlider label={t('settings.keyStrictness')} value={keyStrictness} min={0} max={100} onChange={setKeyStrictness} unit="%" />
+        <SettingSlider label={t('settings.energyPref')} value={energyPreference} min={0} max={100} onChange={setEnergyPreference} unit="%" />
+        <SettingSlider label={t('settings.freshnessImportance')} value={freshnessImportance} min={0} max={100} onChange={setFreshnessImportance} unit="%" />
+        <SettingSlider label={t('settings.crowdImportance')} value={crowdImportance} min={0} max={100} onChange={setCrowdImportance} unit="%" />
       </section>
 
       <button
         onClick={handleSave}
         className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
       >
-        <Save className="h-4 w-4" /> Save Settings
+        <Save className="h-4 w-4" /> {t('settings.save')}
       </button>
     </div>
   );
@@ -88,14 +111,7 @@ function WeightSlider({ label, value, onChange }: { label: string; value: number
   return (
     <div className="flex items-center gap-4">
       <span className="text-xs text-muted-foreground w-36 shrink-0">{label}</span>
-      <Slider
-        value={[value]}
-        onValueChange={([v]) => onChange(v)}
-        min={0}
-        max={50}
-        step={1}
-        className="flex-1"
-      />
+      <Slider value={[value]} onValueChange={([v]) => onChange(v)} min={0} max={50} step={1} className="flex-1" />
       <span className="font-mono text-xs text-foreground w-10 text-right">{value}%</span>
     </div>
   );
@@ -105,14 +121,7 @@ function SettingSlider({ label, value, min, max, onChange, unit }: { label: stri
   return (
     <div className="flex items-center gap-4">
       <span className="text-xs text-muted-foreground w-52 shrink-0">{label}</span>
-      <Slider
-        value={[value]}
-        onValueChange={([v]) => onChange(v)}
-        min={min}
-        max={max}
-        step={1}
-        className="flex-1"
-      />
+      <Slider value={[value]} onValueChange={([v]) => onChange(v)} min={min} max={max} step={1} className="flex-1" />
       <span className="font-mono text-xs text-foreground w-16 text-right">{value}{unit}</span>
     </div>
   );

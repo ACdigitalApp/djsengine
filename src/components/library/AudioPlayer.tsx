@@ -4,6 +4,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Upload } from 'lu
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useUpdateTrack } from '@/hooks/useTracks';
+import { useI18n } from '@/lib/i18n';
 import { toast } from 'sonner';
 
 interface AudioPlayerProps {
@@ -29,6 +30,7 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const updateTrack = useUpdateTrack();
+  const { t } = useI18n();
 
   // Reset when track changes
   useEffect(() => {
@@ -81,9 +83,9 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
 
       const { data: { publicUrl } } = supabase.storage.from('track-audio').getPublicUrl(path);
       updateTrack.mutate({ id: track.id, updates: { audio_url: publicUrl } });
-      toast.success('Audio caricato!');
+      toast.success(t('player.audioUploaded'));
     } catch (err: any) {
-      toast.error('Errore upload: ' + err.message);
+      toast.error(t('player.uploadError') + ': ' + err.message);
     } finally {
       setIsUploading(false);
     }
@@ -103,9 +105,9 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
 
       const { data: { publicUrl } } = supabase.storage.from('track-artwork').getPublicUrl(path);
       updateTrack.mutate({ id: track.id, updates: { artwork_url: publicUrl } });
-      toast.success('Copertina caricata!');
+      toast.success(t('player.artworkUploaded'));
     } catch (err: any) {
-      toast.error('Errore upload: ' + err.message);
+      toast.error(t('player.uploadError') + ': ' + err.message);
     }
   };
 
@@ -146,7 +148,7 @@ export function AudioPlayer({ track, onNext, onPrev }: AudioPlayerProps) {
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </button>
         ) : (
-          <label className="p-2 rounded-full bg-secondary text-muted-foreground hover:text-foreground cursor-pointer transition-colors" title="Carica audio">
+          <label className="p-2 rounded-full bg-secondary text-muted-foreground hover:text-foreground cursor-pointer transition-colors" title={t("player.uploadAudio")}>
             <Upload className="h-4 w-4" />
             <input ref={fileInputRef} type="file" accept="audio/*" className="hidden" onChange={handleUploadAudio} disabled={isUploading} />
           </label>
