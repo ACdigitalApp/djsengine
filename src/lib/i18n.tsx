@@ -145,7 +145,7 @@ const translations = {
   'crates.energyUp': { en: 'Energy Up', it: 'Energia Su' },
   'crates.energyUpDesc': { en: 'Tracks to raise energy', it: 'Brani per alzare l\'energia' },
   'crates.riempipista': { en: 'Riempipista', it: 'Riempipista' },
-  'crates.riem pipistaDesc': { en: 'Guaranteed floor fillers', it: 'Riempi pista garantiti' },
+  'crates.riempipistaDesc': { en: 'Guaranteed floor fillers', it: 'Riempi pista garantiti' },
   'crates.similarFav': { en: 'Similar to Favorites', it: 'Simili ai Preferiti' },
   'crates.similarFavDesc': { en: 'Matches your top picks', it: 'Corrispondenze con le tue scelte' },
   'crates.highCompat': { en: 'High Compatibility', it: 'Alta Compatibilità' },
