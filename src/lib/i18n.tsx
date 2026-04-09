@@ -74,6 +74,7 @@ const translations = {
   'sidebar.sources': { en: 'Sources', it: 'Sorgenti' },
   'sidebar.localLibrary': { en: 'Local Library', it: 'Libreria Locale' },
   'sidebar.otherSources': { en: 'Other Sources', it: 'Altre Sorgenti' },
+  'sidebar.virtualDj': { en: 'Virtual DJ', it: 'Virtual DJ' },
   'sidebar.soon': { en: 'Soon', it: 'Presto' },
 
   // Track table columns

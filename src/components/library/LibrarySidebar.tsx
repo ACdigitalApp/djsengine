@@ -107,7 +107,7 @@ export function LibrarySidebar({ activeFilter, onFilterChange }: LibrarySidebarP
 
   const SOURCE_ITEMS = [
     { id: 'source_local', label: t('sidebar.localLibrary'), icon: Folder },
-    { id: 'source_virtualdj', label: 'Virtual DJ', icon: Disc3 },
+    { id: 'source_virtualdj', label: t('sidebar.virtualDj'), icon: Disc3 },
     { id: 'source_tidal', label: 'TIDAL', icon: Folder, placeholder: true },
     { id: 'source_mixupload', label: 'Mixupload', icon: Folder, placeholder: true },
     { id: 'source_other', label: t('sidebar.otherSources'), icon: Folder, placeholder: true },
