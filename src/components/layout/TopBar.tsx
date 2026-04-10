@@ -32,6 +32,7 @@ export function TopBar() {
       <Link to="/" className="flex items-center gap-2">
         <img src={vinylLogo} alt="DJ'S ENGINE" className="h-7 w-7 rounded-full animate-spin-slow" />
         <span className="font-heading font-bold text-foreground text-sm tracking-tight hidden sm:inline">DJ'S ENGINE</span>
+        <span className="italic text-[#2D6A4F] text-xs hidden sm:inline ml-1">by AC Digital App</span>
       </Link>
 
       <div className="flex items-center gap-2">
