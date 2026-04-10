@@ -4,6 +4,7 @@ import { useSettings, useUpsertSetting } from '@/hooks/useSettings';
 import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import { Save, Globe, User, Key, Crown, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 
 import type { RecommendationWeights } from '@/types/track';
@@ -13,6 +14,7 @@ import vinylLogo from '@/assets/vinyl-logo.avif';
 
 export default function SettingsPage() {
   const { t, lang, setLang } = useI18n();
+  const navigate = useNavigate();
   
   const { data: settings } = useSettings();
   const upsertSetting = useUpsertSetting();
@@ -163,7 +165,12 @@ export default function SettingsPage() {
             <p className="font-medium text-foreground">DJ Pro</p>
             <p className="text-xs text-muted-foreground">{t('settings.fullAccess')}</p>
           </div>
-          <span className="px-3 py-1 rounded-md text-xs font-medium bg-primary/15 text-primary">Pro</span>
+          <button
+            onClick={() => navigate('/upgrade')}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            Upgrade
+          </button>
         </div>
       </section>
 

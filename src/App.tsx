@@ -20,6 +20,7 @@ import BankDetailsPage from "./pages/BankDetails";
 import TidalCallbackPage from "./pages/TidalCallback";
 import DiscoverPage from "./pages/Discover";
 import ForbiddenPage from "./pages/Forbidden";
+import UpgradePage from "./pages/Upgrade";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="/crates" element={<AuthGuard><AppLayout><CratesPage /></AppLayout></AuthGuard>} />
                 <Route path="/sources" element={<AuthGuard><AppLayout><SourcesPage /></AppLayout></AuthGuard>} />
                 <Route path="/settings" element={<AuthGuard><AppLayout><SettingsPage /></AppLayout></AuthGuard>} />
+                <Route path="/upgrade" element={<AuthGuard><UpgradePage /></AuthGuard>} />
 
                 {/* Admin-only routes */}
                 <Route path="/users" element={<AuthGuard requireAdmin><AppLayout><UserManagementPage /></AppLayout></AuthGuard>} />
