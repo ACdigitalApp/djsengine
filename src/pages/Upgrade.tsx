@@ -43,7 +43,7 @@ export default function UpgradePage() {
       if (res.data?.payment_status === 'paid') {
         setPaymentStatus('paid');
         setPolling(false);
-        toast.success(t('upgrade.paymentSuccess') || 'Pagamento completato! Sei Pro!');
+        toast.success('Pagamento completato! Sei Pro!');
       } else if (res.data?.status === 'expired') {
         setPaymentStatus('expired');
         setPolling(false);
