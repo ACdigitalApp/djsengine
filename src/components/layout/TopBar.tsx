@@ -42,7 +42,7 @@ export function TopBar() {
           {String(348).padStart(5, '0').split('').map((digit, i) => (
             <span
               key={i}
-              className="inline-flex items-center justify-center w-5 h-6 rounded bg-[#2D6A4F] text-white font-mono font-bold text-sm"
+              className="inline-flex items-center justify-center w-5 h-6 font-mono font-bold text-sm text-[#2D6A4F]"
             >
               {digit}
             </span>
