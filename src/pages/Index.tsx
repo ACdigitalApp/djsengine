@@ -57,8 +57,8 @@ export default function IndexPage() {
               <p className="mt-6 max-w-2xl text-xl leading-8 text-slate-600">
                 Build better playlists, choose the right tracks, find great mix combinations, and keep your library fresh and organized.
               </p>
-              <p className="mt-3 max-w-2xl text-lg leading-7 text-[#2D6A4F] font-semibold">
-                Works with VirtualDJ for easy track and playlist import and export.
+              <p className="mt-3 max-w-2xl text-lg leading-7 text-[#2D6A4F] font-semibold italic">
+                Works with VirtualDJ for easy track and playlist Import and Export.
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
