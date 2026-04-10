@@ -21,8 +21,8 @@ export default function UpgradePage() {
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (user) {
-        const { data } = await supabase.from('profiles').select('plan').eq('id', user.id).maybeSingle();
-        if (data?.plan) setUserPlan(data.plan);
+        const { data } = await supabase.from('profiles').select('*').eq('user_id', user.id).maybeSingle();
+        if (data && 'plan' in data && (data as any).plan) setUserPlan((data as any).plan);
       }
     });
   }, []);

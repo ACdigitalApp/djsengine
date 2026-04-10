@@ -58,6 +58,9 @@ export default function IndexPage() {
                 Manage playlists, select the best tracks, find the most compatible mixes and
                 keep your library always up to date.
               </p>
+              <p className="mt-3 max-w-2xl text-lg leading-7 text-slate-500">
+                Si collega a VirtualDJ: import &amp; export tracks and playlist.
+              </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
