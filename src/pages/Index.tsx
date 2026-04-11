@@ -57,7 +57,7 @@ export default function IndexPage() {
                 Build better playlists, choose the right tracks, find great mix combinations, and keep your library fresh and organized.
               </p>
               <p className="mt-3 max-w-2xl text-xl leading-8 text-[#2D6A4F] italic font-normal">
-                Works with VirtualDJ for easy track and playlist Import and Export.
+                Works with VirtualDJ and Traktor for easy Tracks and Playlist Import and Export.
               </p>
               <p className="mt-1 max-w-2xl text-sm italic text-slate-900">
                 Special Advice From Tony Caridi Dj And Producer
