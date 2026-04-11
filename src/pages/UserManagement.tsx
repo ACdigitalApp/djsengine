@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,6 +10,11 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import vinylLogo from '@/assets/vinyl-logo.avif';
+
+interface CrossAppRevenue {
+  amount: number;
+  users: number;
+}
 
 // Types
 interface UserRow {
@@ -57,11 +62,11 @@ function formatDate(d: string | null) {
 
 // Cross-app revenue
 const CROSS_APPS = [
-  { key: 'djsengine', label: 'DJSEngine', color: 'bg-purple-500' },
-  { key: 'gestionepassword', label: 'Gestione Password', color: 'bg-blue-500' },
-  { key: 'gestionescadenze', label: 'Gestione Scadenze', color: 'bg-amber-500' },
-  { key: 'speakeasy', label: 'Speak & Translate', color: 'bg-emerald-500' },
-  { key: 'librifree', label: 'LibriFree', color: 'bg-rose-500' },
+  { key: 'djsengine',        label: 'DJSEngine',          color: 'bg-purple-500' },
+  { key: 'gestionepassword', label: 'Gestione Password',  color: 'bg-blue-500'   },
+  { key: 'gestionescadenze', label: 'Gestione Scadenze',  color: 'bg-amber-500'  },
+  { key: 'speakeasy',        label: 'Speak & Translate',  color: 'bg-emerald-500'},
+  { key: 'librifree',        label: 'LibriFree',          color: 'bg-rose-500'   },
 ];
 
 export default function UserManagementPage() {
@@ -76,11 +81,22 @@ export default function UserManagementPage() {
   const [editForm, setEditForm] = useState({ role: 'user', plan: 'free', subscription_status: 'active', phone: '', notification_enabled: false });
   const [saving, setSaving] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [crossRevenue, setCrossRevenue] = useState<Record<string, CrossAppRevenue>>({});
+  const [revenueLoading, setRevenueLoading] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) setCurrentUserId(data.user.id);
     });
+  }, []);
+
+  const fetchRevenue = useCallback(async () => {
+    setRevenueLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-revenue');
+      if (!error && data?.revenue) setCrossRevenue(data.revenue);
+    } catch { /* silenzioso */ }
+    finally { setRevenueLoading(false); }
   }, []);
 
   const fetchUsers = async () => {
@@ -111,7 +127,7 @@ export default function UserManagementPage() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => { fetchUsers(); fetchRevenue(); }, [fetchRevenue]);
 
   const startEdit = (u: UserRow) => {
     setEditingId(u.id);
@@ -171,16 +187,16 @@ export default function UserManagementPage() {
   });
 
   // KPI calculations
-  const payingUsers = users.filter(u => u.plan === 'pro' || u.plan === 'premium').length;
   const trialUsers = users.filter(u => u.subscription_status === 'trialing').length;
   const blockedUsers = users.filter(u => u.subscription_status === 'blocked' || u.subscription_status === 'expired').length;
-  const totalRevenue = users.reduce((sum, u) => sum + u.total_paid, 0);
+  const stripeRevenue = crossRevenue['djsengine']?.amount ?? 0;
+  const stripeUsers = crossRevenue['djsengine']?.users ?? 0;
 
   const kpis = [
-    { icon: Euro, label: 'Incasso Totale', value: `€${totalRevenue.toFixed(2)}`, color: 'text-emerald-600' },
-    { icon: TrendingUp, label: 'Saldo', value: `€${totalRevenue.toFixed(2)}`, color: 'text-blue-600' },
-    { icon: CreditCard, label: 'Utenti Paganti', value: payingUsers, color: 'text-purple-600' },
-    { icon: Calendar, label: 'Ultimi 30gg', value: '€0.00', color: 'text-indigo-600' },
+    { icon: Euro, label: 'Incasso Totale', value: `€${stripeRevenue.toFixed(2)}`, color: 'text-emerald-600' },
+    { icon: TrendingUp, label: 'Saldo', value: `€${stripeRevenue.toFixed(2)}`, color: 'text-blue-600' },
+    { icon: CreditCard, label: 'Utenti Paganti', value: stripeUsers, color: 'text-purple-600' },
+    { icon: Calendar, label: 'Ultimi 30gg', value: `€${stripeRevenue.toFixed(2)}`, color: 'text-indigo-600' },
     { icon: UserCheck, label: 'Trial Attivi', value: trialUsers, color: 'text-cyan-600' },
     { icon: AlertTriangle, label: 'Scaduti/Bloccati', value: blockedUsers, color: 'text-red-600' },
   ];
@@ -218,17 +234,31 @@ export default function UserManagementPage() {
 
       {/* Cross-App Revenue */}
       <div className="bg-card rounded-xl border border-border p-5">
-        <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-          <TrendingUp className="w-4 h-4" /> Incassi Tutte le App ACdigitalApp
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-foreground flex items-center gap-2">
+            <TrendingUp className="w-4 h-4" /> Incassi Tutte le App ACdigitalApp
+          </h3>
+          <span className="text-sm font-bold text-emerald-600">
+            Totale: €{Object.values(crossRevenue).reduce((s, d) => s + d.amount, 0).toFixed(2)}/mese
+          </span>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          {CROSS_APPS.map(app => (
-            <div key={app.key} className="rounded-lg bg-muted/50 p-3 text-center">
-              <div className={`w-3 h-3 rounded-full ${app.color} mx-auto mb-1`} />
-              <p className="text-xs text-muted-foreground">{app.label}</p>
-              <p className="text-sm font-bold">€0.00</p>
-            </div>
-          ))}
+          {CROSS_APPS.map(app => {
+            const d = crossRevenue[app.key];
+            return (
+              <div key={app.key} className="rounded-lg bg-muted/50 p-3 text-center">
+                <div className={`w-3 h-3 rounded-full ${app.color} mx-auto mb-1`} />
+                <p className="text-xs text-muted-foreground">{app.label}</p>
+                {revenueLoading
+                  ? <Loader2 className="w-3 h-3 animate-spin mx-auto mt-1 text-muted-foreground" />
+                  : <>
+                      <p className="text-sm font-bold">€{(d?.amount ?? 0).toFixed(2)}</p>
+                      <p className="text-[10px] text-muted-foreground">{d?.users ?? 0} paganti</p>
+                    </>
+                }
+              </div>
+            );
+          })}
         </div>
       </div>
 
