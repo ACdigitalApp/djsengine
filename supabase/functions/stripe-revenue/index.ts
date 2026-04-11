@@ -52,8 +52,7 @@ serve(async (req) => {
 
     for (const sub of subscriptions.data) {
       for (const item of sub.items.data) {
-        const product = item.price.product;
-        const productId = typeof product === "string" ? product : (product as Stripe.Product).id;
+        const productId = typeof item.price.product === "string" ? item.price.product : item.price.product.id;
         const appKey = productToApp[productId];
         if (!appKey) continue;
 
