@@ -60,6 +60,9 @@ export default function IndexPage() {
               <p className="mt-3 max-w-2xl text-xl leading-8 text-[#2D6A4F] italic font-normal">
                 Works with VirtualDJ for easy track and playlist Import and Export.
               </p>
+              <p className="mt-1 max-w-2xl text-sm italic text-slate-900">
+                Special Advice From Tony Caridi Dj And Producer
+              </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
