@@ -108,41 +108,6 @@ export default function IndexPage() {
           </div>
         </section>
 
-        {/* Sezione benefits - SENZA disco grande duplicato */}
-        <section id="benefits" className="border-y border-slate-100 bg-white">
-          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-6 py-20 lg:grid-cols-2 lg:px-10">
-            <div>
-              <div className="mb-4 inline-flex items-center rounded-full border border-[#2D6A4F]/15 bg-[#2D6A4F]/5 px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-[#2D6A4F]">
-                Portable app
-              </div>
-              <h2 className="text-4xl font-extrabold tracking-tight text-slate-950 md:text-5xl">
-                Take your music selection everywhere
-              </h2>
-              <div className="mt-8 space-y-5">
-                {[
-                  'Quick access to your library',
-                  'Playlists and crates always available',
-                  'Useful tools to choose the next track',
-                  'Clean and optimized experience',
-                ].map((point) => (
-                  <div key={point} className="flex items-start gap-3 text-lg text-slate-700">
-                    <CheckCircle2 className="mt-0.5 h-6 w-6 flex-none text-[#2D6A4F]" />
-                    <span>{point}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8">
-                <Link
-                  to={authenticated ? '/library' : '/auth'}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-[#2D6A4F] px-6 py-3.5 text-base font-semibold text-white transition hover:bg-[#24563f]"
-                >
-                  Start Free
-                </Link>
-              </div>
-            </div>
-
-          </div>
-        </section>
 
         {/* CTA finale */}
         <section className="bg-[#f7faf8] py-20">
