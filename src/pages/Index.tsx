@@ -1,24 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, LogIn, CheckCircle2, Music2, Lightbulb, RefreshCw } from 'lucide-react';
+import { ArrowRight, LogIn, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Turntable } from '@/components/Turntable';
+import headphonesImg from '@/assets/headphones-gold.png';
 
 const features = [
   {
-    icon: Music2,
     title: 'Music Selection',
     description:
       'Organize tracks, playlists and library with smart filters for BPM, key, energy and compatibility.',
   },
   {
-    icon: Lightbulb,
     title: 'Smart Recommendations',
     description:
       'Get suggestions for the next best track based on mix, style, energy and sound affinity.',
   },
   {
-    icon: RefreshCw,
     title: 'Always Updated Library',
     description:
       'Keep control of your selections, discover useful new tracks and prepare more effective sets.',
@@ -94,21 +92,18 @@ export default function IndexPage() {
         <section id="features" className="bg-[#f7faf8] pb-20">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {features.map((item) => {
-                const Icon = item.icon;
-                return (
+              {features.map((item) => (
                   <div
                     key={item.title}
                     className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm"
                   >
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-[#2D6A4F]/10 text-[#2D6A4F]">
-                      <Icon className="h-7 w-7" />
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center">
+                      <img src={headphonesImg} alt="DJ Headphones" className="h-14 w-14 object-contain" />
                     </div>
                     <h3 className="text-3xl font-bold tracking-tight text-slate-900">{item.title}</h3>
                     <p className="mt-5 text-lg leading-8 text-slate-600">{item.description}</p>
                   </div>
-                );
-              })}
+              ))}
             </div>
           </div>
         </section>
