@@ -86,7 +86,7 @@ export default function IndexPage() {
                 <img
                   src={bigDiscImg}
                   alt="Disco grande DJ'S ENGINE"
-                  className="relative z-10 h-auto w-full max-w-[560px] object-contain animate-spin-horizontal"
+                  className="relative z-10 h-auto w-full max-w-[560px] object-contain motion-safe:animate-[spin_24s_linear_infinite]"
                 />
               </div>
             </div>
