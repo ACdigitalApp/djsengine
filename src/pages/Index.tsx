@@ -141,11 +141,6 @@ export default function IndexPage() {
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-slate-200 bg-[#f7faf8] p-10 text-center shadow-sm">
-              <div className="mx-auto max-w-md text-2xl font-semibold text-slate-700">
-                Clean, focused and ready for your next set.
-              </div>
-            </div>
           </div>
         </section>
 
