@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, LogIn, CheckCircle2, Music2, Lightbulb, RefreshCw } from 'lucide-react';
+import { ArrowRight, LogIn, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Turntable } from '@/components/Turntable';
+import headphonesImg from '@/assets/headphones-gold.png';
 
 const features = [
   {
