@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, LogIn, CheckCircle2, Music2, Lightbulb, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import bigDiscImg from '@/assets/vinyl-big-disc.png';
+import { Turntable } from '@/components/Turntable';
 
 const features = [
   {
@@ -79,16 +79,9 @@ export default function IndexPage() {
               </div>
             </div>
 
-            {/* Disco grande SOLO qui nella hero */}
+            {/* Turntable with spinning disc and fixed arm */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-[#2D6A4F]/10 blur-3xl" />
-                <img
-                  src={bigDiscImg}
-                  alt="Disco grande DJ'S ENGINE"
-                  className="relative z-10 h-auto w-full max-w-[560px] object-contain motion-safe:animate-[spin_24s_linear_infinite]"
-                />
-              </div>
+              <Turntable />
             </div>
           </div>
         </section>
