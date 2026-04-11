@@ -35,7 +35,7 @@ serve(async (req) => {
     const subscriptions = await stripe.subscriptions.list({
       status: "active",
       limit: 100,
-      expand: ["data.items.data.price.product"],
+      expand: ["data.items.data.price"],
     });
 
     // Mappa productId → chiave app
