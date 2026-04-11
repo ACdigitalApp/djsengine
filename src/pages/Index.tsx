@@ -50,7 +50,8 @@ export default function IndexPage() {
               </div>
 
               <h1 className="max-w-3xl text-5xl font-extrabold leading-[0.95] tracking-tight text-slate-950 md:text-6xl lg:text-7xl">
-                Organize Your Music
+                Organize Your
+                <span className="block text-center">Music</span>
                 <span className="block text-[#2D6A4F]">Like a DJ Pro</span>
               </h1>
 
