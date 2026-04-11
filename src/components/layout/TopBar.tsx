@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LogOut, LogIn, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useI18n } from '@/lib/i18n';
-import vinylLogo from '@/assets/vinyl-logo-gold.png';
+import { Turntable } from '@/components/Turntable';
 
 export function TopBar() {
   const { t } = useI18n();
@@ -30,7 +30,7 @@ export function TopBar() {
   return (
     <header className="flex items-center justify-between px-4 md:px-6 h-14 border-b border-border bg-card shrink-0 z-50">
       <Link to="/" className="flex items-center gap-2">
-        <img src={vinylLogo} alt="DJ'S ENGINE" className="h-10 w-10 object-contain animate-vinyl-spin" />
+        <Turntable size="sm" />
         <span className="font-heading font-bold text-foreground text-sm tracking-tight hidden sm:inline">DJ'S ENGINE</span>
         <span className="italic text-[#2D6A4F] text-xs hidden sm:inline ml-1">by AC Digital App</span>
       </Link>
