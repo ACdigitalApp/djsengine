@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LogOut, LogIn, Home } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useI18n } from '@/lib/i18n';
-import vinylLogo from '@/assets/vinyl-logo-gold.png';
+import { Turntable } from '@/components/Turntable';
 
 export function TopBar() {
   const { t } = useI18n();
