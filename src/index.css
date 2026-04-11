@@ -95,4 +95,13 @@
     backdrop-filter: blur(12px);
     background: hsl(var(--card) / 0.8);
   }
+  .animate-spin-horizontal {
+    animation: spin-horizontal 6s linear infinite;
+    perspective: 800px;
+  }
+}
+
+@keyframes spin-horizontal {
+  0% { transform: rotateZ(0deg); }
+  100% { transform: rotateZ(360deg); }
 }
