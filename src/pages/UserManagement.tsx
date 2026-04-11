@@ -143,7 +143,7 @@ export default function UserManagementPage() {
   const saveEdit = async (u: UserRow) => {
     setSaving(true);
     await supabase.from('profiles').update({
-      display_name: editForm.display_name ?? u.display_name,
+      display_name: u.display_name,
       updated_at: new Date().toISOString(),
     }).eq('id', u.id);
 
