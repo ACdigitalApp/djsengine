@@ -112,8 +112,8 @@ export default function IndexPage() {
         {/* CTA finale */}
         <section className="bg-[#f7faf8] py-20">
           <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
-            <h2 className="text-4xl font-extrabold tracking-tight text-slate-950 md:text-5xl">
-              Ready to improve your music selection?
+            <h2 className="text-4xl font-normal tracking-tight text-slate-950 md:text-5xl">
+              Ready to Improve Your Music Selection ?
             </h2>
             <p className="mt-5 text-xl leading-8 text-slate-600">
               Access your library, organize tracks and build smarter sets.
