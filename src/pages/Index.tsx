@@ -7,19 +7,16 @@ import headphonesImg from '@/assets/headphones-gold.png';
 
 const features = [
   {
-    icon: Music2,
     title: 'Music Selection',
     description:
       'Organize tracks, playlists and library with smart filters for BPM, key, energy and compatibility.',
   },
   {
-    icon: Lightbulb,
     title: 'Smart Recommendations',
     description:
       'Get suggestions for the next best track based on mix, style, energy and sound affinity.',
   },
   {
-    icon: RefreshCw,
     title: 'Always Updated Library',
     description:
       'Keep control of your selections, discover useful new tracks and prepare more effective sets.',
