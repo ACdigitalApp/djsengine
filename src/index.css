@@ -95,13 +95,24 @@
     backdrop-filter: blur(12px);
     background: hsl(var(--card) / 0.8);
   }
-  .animate-spin-horizontal {
-    animation: spin-horizontal 24s linear infinite;
-    perspective: 800px;
-  }
 }
 
-@keyframes spin-horizontal {
-  0% { transform: rotateZ(0deg); }
-  100% { transform: rotateZ(360deg); }
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes vinyl-shimmer {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.animate-vinyl-spin {
+  animation: vinyl-spin 8s linear infinite;
+  transform-origin: center center;
+}
+
+.animate-vinyl-shimmer {
+  animation: vinyl-shimmer 12s linear infinite;
+  transform-origin: center center;
 }
