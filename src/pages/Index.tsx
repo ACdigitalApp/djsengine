@@ -97,8 +97,8 @@ export default function IndexPage() {
                     key={item.title}
                     className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm"
                   >
-                    <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center">
-                      <img src={headphonesImg} alt="DJ Headphones" className="h-22 w-22 object-contain" />
+                    <div className="mx-auto mb-6 flex h-32 w-32 items-center justify-center">
+                      <img src={headphonesImg} alt="DJ Headphones" className="h-28 w-28 object-contain" />
                     </div>
                     <h3 className="text-3xl font-bold tracking-tight text-slate-900">{item.title}</h3>
                     <p className="mt-5 text-lg leading-8 text-slate-600">{item.description}</p>
