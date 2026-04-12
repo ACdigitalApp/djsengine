@@ -93,8 +93,9 @@ export default function UserManagementPage() {
   const fetchRevenue = useCallback(async () => {
     setRevenueLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('stripe-revenue');
-      if (!error && data?.revenue) setCrossRevenue(data.revenue);
+      const res = await fetch('https://tbqreletxtzaosvyyvnv.supabase.co/functions/v1/stripe-revenue');
+      const data = res.ok ? await res.json() : null;
+      if (data?.revenue) setCrossRevenue(data.revenue);
     } catch { /* silenzioso */ }
     finally { setRevenueLoading(false); }
   }, []);
